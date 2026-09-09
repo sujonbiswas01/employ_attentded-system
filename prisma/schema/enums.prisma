@@ -1,10 +1,56 @@
 enum Role {
-    USER
-    ADMIN
+  ADMIN
+  HR
+  EMPLOYEE
 }
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  BLOCKED
-  DELETED
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+}
+
+enum AttendanceStatus {
+  PRESENT
+  LATE
+  ABSENT
+  HALF_DAY
+  ON_LEAVE
+  HOLIDAY
+  WEEKEND
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  ANNUAL
+  MATERNITY
+  PATERNITY
+  UNPAID
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  CHECK_IN
+  CHECK_OUT
+  LEAVE_APPROVE
+  LEAVE_REJECT
 }

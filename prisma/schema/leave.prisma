@@ -1,0 +1,24 @@
+model LeaveRequest {
+  id           String          @id @default(uuid())
+  employeeId   String
+  employee     EmployeeProfile @relation("EmployeeLeaves", fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  leaveType    LeaveType
+  startDate    DateTime        @db.Date
+  endDate      DateTime        @db.Date
+  totalDays    Int
+  reason       String
+  
+  status       LeaveStatus     @default(PENDING)
+  
+  approvedById String?
+  approvedBy   User?           @relation("ApprovedByRelation", fields: [approvedById], references: [id], onDelete: SetNull)
+  adminRemarks String?
+
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@map("leave_requests")
+}

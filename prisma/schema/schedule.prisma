@@ -1,0 +1,27 @@
+model WorkSchedule {
+  id           String            @id @default(uuid())
+  name         String            @unique
+  startTime    String            // e.g. "09:00"
+  endTime      String            // e.g. "17:00"
+  graceMinutes Int               @default(15)
+  workDays     Int[]             // Days array: [1, 2, 3, 4, 5] (1=Monday, 7=Sunday)
+
+  employees    EmployeeProfile[]
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@map("work_schedules")
+}
+
+model Holiday {
+  id          String   @id @default(uuid())
+  title       String
+  date        DateTime @unique @db.Date
+  description String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("holidays")
+}

@@ -1,0 +1,13 @@
+model AuditLog {
+  id        String      @id @default(uuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  action    AuditAction
+  details   String
+  ipAddress String?
+
+  createdAt DateTime    @default(now())
+
+  @@map("audit_logs")
+}

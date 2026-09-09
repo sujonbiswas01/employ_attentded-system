@@ -1,0 +1,29 @@
+model Department {
+  id          String            @id @default(uuid())
+  name        String            @unique
+  code        String            @unique
+  description String?
+  
+  employees   EmployeeProfile[]
+  positions   Position[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("departments")
+}
+
+model Position {
+  id           String            @id @default(uuid())
+  title        String
+  departmentId String
+  department   Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  
+  employees    EmployeeProfile[]
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([title, departmentId])
+  @@map("positions")
+}

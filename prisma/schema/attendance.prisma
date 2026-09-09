@@ -1,0 +1,28 @@
+model Attendance {
+  id             String           @id @default(uuid())
+  employeeId     String
+  employee       EmployeeProfile  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  date           DateTime         @db.Date
+  checkIn        DateTime?
+  checkOut       DateTime?
+  
+  status         AttendanceStatus @default(ABSENT)
+  
+  workingHours   Float            @default(0.0)
+  overtimeHours  Float            @default(0.0)
+  lateMinutes    Int              @default(0)
+  earlyLeaveMins Int              @default(0)
+  
+  checkInIp      String?
+  checkOutIp     String?
+  notes          String?
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([employeeId, date])
+  @@index([date])
+  @@index([status])
+  @@map("attendances")
+}

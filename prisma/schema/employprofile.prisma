@@ -1,0 +1,32 @@
+model EmployeeProfile {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  employeeId     String         @unique
+  firstName      String
+  lastName       String
+  phone          String?
+  gender         Gender?
+  dateOfBirth    DateTime?
+  joiningDate    DateTime
+  
+  departmentId   String?
+  department     Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  
+  positionId     String?
+  position       Position?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  
+  employmentType EmploymentType @default(FULL_TIME)
+  
+  workScheduleId String?
+  workSchedule   WorkSchedule?  @relation(fields: [workScheduleId], references: [id], onDelete: SetNull)
+
+  attendances    Attendance[]
+  leaveRequests  LeaveRequest[] @relation("EmployeeLeaves")
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("employee_profiles")
+}
