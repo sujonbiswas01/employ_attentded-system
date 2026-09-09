@@ -8,7 +8,8 @@ export const createEmployeeSchema = z.object({
   gender: z.nativeEnum(Gender).optional(),
   dateOfBirth: z.string().datetime().or(z.date()).optional(),
   joiningDate: z.string().datetime().or(z.date()),
-  
+  title : z.string().optional(),
+  departmentName: z.string().optional(),
 });
 
 export const updateEmployeeSchema = createEmployeeSchema

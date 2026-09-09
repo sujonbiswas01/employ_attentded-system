@@ -47,6 +47,7 @@ const deleteDepartment = catchAsync(async (req: Request, res: Response) => {
 
 // Position Controllers
 const createPosition = catchAsync(async (req: Request, res: Response) => {
+  console.log(req.body,"nsdf")
   const result = await DepartmentPositionService.createPosition(req.body);
   sendResponse(res, {
     httpStatusCode: status.CREATED,

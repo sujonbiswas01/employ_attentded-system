@@ -2,16 +2,25 @@ import { Gender, EmploymentType } from "../../../generated/prisma/enums";
 
 export interface ICreateEmployeePayload {
   userId?: string;
-  employeeId: string;
+
   firstName: string;
+
   lastName: string;
+
   phone?: string;
+
   gender?: Gender;
+
   dateOfBirth?: string | Date;
+
   joiningDate: string | Date;
-  departmentName?: string;
-  title?: string;
+
+  departmentName: string;
+
+  title: string;
+
   employmentType?: EmploymentType;
+
   workScheduleId?: string;
 }
 

@@ -12,7 +12,7 @@ export const updateDepartmentSchema = createDepartmentSchema.partial();
 // Position Schemas
 export const createPositionSchema = z.object({
   title: z.string().min(1),
-  departmentId: z.string().uuid("Invalid Department ID"),
+  name: z.string().min(1),
 });
 
 export const updatePositionSchema = createPositionSchema.partial();

@@ -29,23 +29,24 @@ const getMyProfile = async (user: IRequestUser) => {
 };
 
 // ২. প্রোফাইল ক্রিয়েট করা
-const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmployeePayload) => {
+const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmployeePayload,r:any) => {
   if (!user?.userId) {
     throw new AppError(status.UNAUTHORIZED, "Unauthorized access. Please login first.");
   }
 
   // যদি body-তে userId না থাকে, তবে logged-in user এর ID ব্যবহৃত হবে
   const targetUserId = payload.userId || user.userId;
-  const { employeeId, ...restPayload } = payload;
+  const {...restPayload } = payload;
+  const { departmentName ,title}=r
 
 
 
   // A. User একাউন্ট অস্তিত্বমান কিনা
   const userExist = await prisma.user.findUnique({
     where: { id: targetUserId },
-    include: { employeeProfile: {select: {id: true}} },
+    include: { employeeProfile: {select: {employeeId: true}} },
   });
-  const id=userExist?.employeeProfile?.id
+  const id=userExist?.employeeProfile?.employeeId
 
   if (!userExist) {
     throw new AppError(status.NOT_FOUND, "User account not found!");
@@ -57,17 +58,19 @@ const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmploye
   }
   
   // C. Employee ID ইউনিক কিনা চেক করা
+  if (id) {
   const isEmpIdExist = await prisma.employeeProfile.findUnique({
-    where: { employeeId:id as string },
+    where: { employeeId:id },
   });
-
-  if (isEmpIdExist) {
+    if (isEmpIdExist) {
     throw new AppError(status.CONFLICT, "Employee ID already exists!");
   }
+}
+
 
 const department = await prisma.department.findUnique({
   where: {
-    name: restPayload?.departmentName,
+    name: departmentName,
   },
   select: {
     id: true,
@@ -78,7 +81,7 @@ const department = await prisma.department.findUnique({
 if (!department) {
   throw new AppError(
     status.NOT_FOUND,
-    `Department "${restPayload?.departmentName}" not found!`
+    `Department "${departmentName}" not found!`
   );
 }
 
@@ -86,7 +89,7 @@ const departmentId = department.id;
 
 const position = await prisma.position.findUnique({
   where: {
-    title: restPayload?.title as string,
+    title: title as any,
   },
   select: {
     id: true,
@@ -98,18 +101,25 @@ const position = await prisma.position.findUnique({
 if (!position) {
   throw new AppError(
     status.NOT_FOUND,
-    `Position "${restPayload?.title}" not found!`
+    `Position "${title}" not found!`
   );
 }
 
+console.log(position)
+
+
+const employeeId = `EMP-${Date.now()}`;
 
   // D. প্রোফাইল ডাটাবেজে সেভ করা
   return await prisma.employeeProfile.create({
     data: {
       userId: targetUserId,
+      firstName: restPayload.firstName,
+      lastName: restPayload.lastName,
+      phone: restPayload.phone,
+      gender: restPayload.gender,
+      departmentId: departmentId,
       employeeId,
-      ...restPayload,
-      departmentId,
       positionId: position.id,
       dateOfBirth: restPayload.dateOfBirth ? new Date(restPayload.dateOfBirth) : undefined,
       joiningDate: new Date(restPayload.joiningDate),

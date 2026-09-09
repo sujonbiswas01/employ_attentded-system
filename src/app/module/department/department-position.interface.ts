@@ -10,7 +10,7 @@ export interface IUpdateDepartmentPayload extends Partial<ICreateDepartmentPaylo
 // Position Interfaces
 export interface ICreatePositionPayload {
   title: string;
-  departmentId: string;
+  name:string;
 }
 
 export interface IUpdatePositionPayload extends Partial<ICreatePositionPayload> {}

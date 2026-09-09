@@ -16,7 +16,7 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 const createEmployeeProfile = catchAsync(async (req: Request, res: Response) => {
-  const result = await EmployeeService.createEmployeeProfile(req.user, req.body);
+  const result = await EmployeeService.createEmployeeProfile(req.user, req.body,req.body);
 
   sendResponse(res, {
     httpStatusCode: status.CREATED,

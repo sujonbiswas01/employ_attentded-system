@@ -58,7 +58,7 @@ const deleteDepartment = async (id: string) => {
 
 const createPosition = async (payload: ICreatePositionPayload) => {
   const department = await prisma.department.findUnique({
-    where: { id: payload.departmentId },
+    where: { name: payload.name},
   });
 
   if (!department) {
@@ -69,7 +69,7 @@ const createPosition = async (payload: ICreatePositionPayload) => {
     where: {
       title_departmentId: {
         title: payload.title,
-        departmentId: payload.departmentId,
+        departmentId: department.id,
       },
     },
   });
@@ -79,7 +79,10 @@ const createPosition = async (payload: ICreatePositionPayload) => {
   }
 
   return await prisma.position.create({
-    data: payload,
+    data: {
+      title: payload.title,
+      departmentId: department.id,
+    },
     include: { department: true },
   });
 };
