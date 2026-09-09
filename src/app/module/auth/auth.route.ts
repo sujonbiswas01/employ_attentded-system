@@ -11,10 +11,10 @@ import { authLimiter } from "../../middleware/limitter"
 const router=Router()
 router.post("/register",authLimiter,validateRequest(createUserSchema), AuthController.UserRegister)
 router.post("/login",authLimiter, AuthController.loginUser)
-router.get("/me",authLimiter,auth([Role.ADMIN, Role.USER]), AuthController.getMe)
+router.get("/me",authLimiter,auth([Role.ADMIN, Role.EMPLOYEE, Role.HR]), AuthController.getMe)
 
-router.post("/change-password", authLimiter,auth([Role.ADMIN, Role.USER]), AuthController.changePassword)
-router.post("/logout",authLimiter, auth([Role.ADMIN, Role.USER]), AuthController.logoutUser)
+router.post("/change-password", authLimiter,auth([Role.ADMIN, Role.EMPLOYEE, Role.HR]), AuthController.changePassword)
+router.post("/logout",authLimiter, auth([Role.ADMIN, Role.EMPLOYEE,Role.HR]), AuthController.logoutUser)
 router.post("/forget-password",authLimiter, AuthController.forgetPassword)
 router.post("/reset-password", authLimiter,AuthController.resetPassword)
 router.post("/verify-email", authLimiter,AuthController.verifyEmail)

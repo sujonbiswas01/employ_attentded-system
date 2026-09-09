@@ -8,8 +8,16 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Attendance'
+export type * from './models/AuditLog'
 export type * from './models/User'
 export type * from './models/Session'
 export type * from './models/Account'
 export type * from './models/Verification'
+export type * from './models/Department'
+export type * from './models/Position'
+export type * from './models/EmployeeProfile'
+export type * from './models/LeaveRequest'
+export type * from './models/WorkSchedule'
+export type * from './models/Holiday'
 export type * from './commonInputTypes'

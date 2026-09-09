@@ -10,18 +10,78 @@
 */
 
 export const Role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  HR: 'HR',
+  EMPLOYEE: 'EMPLOYEE'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
 
 
-export const UserStatus = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  BLOCKED: 'BLOCKED',
-  DELETED: 'DELETED'
+export const Gender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+  OTHER: 'OTHER'
 } as const
 
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+export type Gender = (typeof Gender)[keyof typeof Gender]
+
+
+export const EmploymentType = {
+  FULL_TIME: 'FULL_TIME',
+  PART_TIME: 'PART_TIME',
+  CONTRACT: 'CONTRACT',
+  INTERN: 'INTERN'
+} as const
+
+export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  LATE: 'LATE',
+  ABSENT: 'ABSENT',
+  HALF_DAY: 'HALF_DAY',
+  ON_LEAVE: 'ON_LEAVE',
+  HOLIDAY: 'HOLIDAY',
+  WEEKEND: 'WEEKEND'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const LeaveType = {
+  CASUAL: 'CASUAL',
+  SICK: 'SICK',
+  ANNUAL: 'ANNUAL',
+  MATERNITY: 'MATERNITY',
+  PATERNITY: 'PATERNITY',
+  UNPAID: 'UNPAID'
+} as const
+
+export type LeaveType = (typeof LeaveType)[keyof typeof LeaveType]
+
+
+export const LeaveStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LeaveStatus = (typeof LeaveStatus)[keyof typeof LeaveStatus]
+
+
+export const AuditAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  CHECK_IN: 'CHECK_IN',
+  CHECK_OUT: 'CHECK_OUT',
+  LEAVE_APPROVE: 'LEAVE_APPROVE',
+  LEAVE_REJECT: 'LEAVE_REJECT'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

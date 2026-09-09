@@ -1,4 +1,4 @@
-import { UserStatus } from "../../../generated/prisma/enums";
+
 import AppError from "../../errorHelper/AppError";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { auth } from "../../lib/auth";
@@ -73,13 +73,7 @@ const loginUser = async (payload: ILoginUser) => {
       password,
     },
   });
-  if (data.user.status === UserStatus.BLOCKED) {
-    throw new AppError(status.FORBIDDEN, "User is blocked");
-  }
 
-  if (data.user.isDeleted || data.user.status === UserStatus.DELETED) {
-    throw new AppError(status.NOT_FOUND, "User is deleted");
-  }
 
   const accessToken = tokenUtils.getAccessToken({
     userId: data.user.id,
@@ -201,9 +195,6 @@ const forgetPassword = async (email: string) => {
   if (!isUserExist) {
     throw new AppError(status.NOT_FOUND, "User not found");
   }
-  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
-    throw new AppError(status.NOT_FOUND, "User not found");
-  }
 
   await auth.api.requestPasswordResetEmailOTP({
     body: {
@@ -228,10 +219,6 @@ const resetPassword = async (
     throw new AppError(status.NOT_FOUND, "User not found");
   }
 
-
-  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
-    throw new AppError(status.NOT_FOUND, "User not found");
-  }
 
   await auth.api.resetPasswordEmailOTP({
     body: {
@@ -278,9 +265,6 @@ const sendOtp = async (email: string) => {
     throw new AppError(status.NOT_FOUND, "User not found");
   }
 
-  if (user.isDeleted || user.status === UserStatus.DELETED) {
-    throw new AppError(status.NOT_FOUND, "User not found");
-  }
   if (user.emailVerified) {
     throw new AppError(status.BAD_REQUEST, "Email already verified");
   }
