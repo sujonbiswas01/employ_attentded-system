@@ -41,8 +41,9 @@ const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmploye
   // A. User একাউন্ট অস্তিত্বমান কিনা
   const userExist = await prisma.user.findUnique({
     where: { id: targetUserId },
-    include: { employeeProfile: true },
+    include: { employeeProfile: {select: {id: true}} },
   });
+  const id=userExist?.employeeProfile?.id
 
   if (!userExist) {
     throw new AppError(status.NOT_FOUND, "User account not found!");
@@ -52,10 +53,10 @@ const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmploye
   if (userExist.employeeProfile) {
     throw new AppError(status.CONFLICT, "Employee profile already exists for this user!");
   }
-
+  
   // C. Employee ID ইউনিক কিনা চেক করা
   const isEmpIdExist = await prisma.employeeProfile.findUnique({
-    where: { employeeId },
+    where: { employeeId:id as string },
   });
 
   if (isEmpIdExist) {
