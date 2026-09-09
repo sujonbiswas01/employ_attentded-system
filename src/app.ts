@@ -37,7 +37,7 @@ initsentry();
 app.use("/api",IndexRouter)
 
 app.use("/",(req,res)=>{
-    res.status(200).json({success:true,message:"home route"})
+    res.status(200).json({success:true,message:"Employ Attended System"})
 })
 
 export default app;

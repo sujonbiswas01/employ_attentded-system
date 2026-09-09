@@ -9,8 +9,8 @@ export interface ICreateEmployeePayload {
   gender?: Gender;
   dateOfBirth?: string | Date;
   joiningDate: string | Date;
-  departmentId?: string;
-  positionId?: string;
+  departmentName?: string;
+  title?: string;
   employmentType?: EmploymentType;
   workScheduleId?: string;
 }

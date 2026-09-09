@@ -198,17 +198,17 @@ export type PositionOrderByWithRelationInput = {
 
 export type PositionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  title?: string
   title_departmentId?: Prisma.PositionTitleDepartmentIdCompoundUniqueInput
   AND?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
   OR?: Prisma.PositionWhereInput[]
   NOT?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
-  title?: Prisma.StringFilter<"Position"> | string
   departmentId?: Prisma.StringFilter<"Position"> | string
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   employees?: Prisma.EmployeeProfileListRelationFilter
-}, "id" | "title_departmentId">
+}, "id" | "title" | "title_departmentId">
 
 export type PositionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

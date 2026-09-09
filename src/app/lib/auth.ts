@@ -2,7 +2,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { Role, UserStatus } from "../../generated/prisma/enums";
+import { Role } from "../../generated/prisma/enums";
 import { bearer, emailOTP, oAuthProxy, phoneNumber } from "better-auth/plugins";
 import { envVars } from "../config/env";
 
@@ -19,19 +19,13 @@ export const auth = betterAuth({
       role: {
         type: "string",
         required: true,
-        defaultValue: Role.USER,
+        defaultValue: Role.EMPLOYEE,
       },
 
       emailVerified: {
         type: "boolean",
         returned: true,
         defaultValue: true,
-      },
-
-      status: {
-        type: "string",
-        required: true,
-        defaultValue: UserStatus.ACTIVE,
       },
       isDeleted: {
         type: "boolean",
@@ -127,8 +121,7 @@ export const auth = betterAuth({
       redirectURI:`${envVars.FRONTEND_URL}/api/auth/callback/google`,
       mapProfileToUser: () => {
         return {
-          role: Role.USER,
-          status: UserStatus.ACTIVE,
+          role: Role.EMPLOYEE,
           emailVerified: true,
           isDeleted: false,
           deletedAt: null,

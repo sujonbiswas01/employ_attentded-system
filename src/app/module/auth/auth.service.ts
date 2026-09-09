@@ -41,7 +41,6 @@ const UserRegister = async (payload: UserCreateInput) => {
     role: data.user.role,
     name: data.user.name,
     email: data.user.email,
-    status: data.user.status,
     isDeleted: data.user.isDeleted,
     emailVerified: data.user.emailVerified,
   });
@@ -51,7 +50,6 @@ const UserRegister = async (payload: UserCreateInput) => {
     role: data.user.role,
     name: data.user.name,
     email: data.user.email,
-    status: data.user.status,
     isDeleted: data.user.isDeleted,
     emailVerified: data.user.emailVerified,
   });
@@ -80,7 +78,6 @@ const loginUser = async (payload: ILoginUser) => {
     role: data.user.role,
     name: data.user.name,
     email: data.user.email,
-    status: data.user.status,
     isDeleted: data.user.isDeleted,
     emailVerified: data.user.emailVerified,
   });
@@ -90,7 +87,6 @@ const loginUser = async (payload: ILoginUser) => {
     role: data.user.role,
     name: data.user.name,
     email: data.user.email,
-    status: data.user.status,
     isDeleted: data.user.isDeleted,
     emailVerified: data.user.emailVerified,
   });
@@ -153,7 +149,6 @@ const changePassword = async (
     role: session.user.role,
     name: session.user.name,
     email: session.user.email,
-    status: session.user.status,
     isDeleted: session.user.isDeleted,
     emailVerified: session.user.emailVerified,
   });
@@ -163,7 +158,6 @@ const changePassword = async (
     role: session.user.role,
     name: session.user.name,
     email: session.user.email,
-    status: session.user.status,
     isDeleted: session.user.isDeleted,
     emailVerified: session.user.emailVerified,
   });

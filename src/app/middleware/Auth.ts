@@ -41,11 +41,6 @@ const auth = (roles: string[]) => {
               res.setHeader("X-Session-Refresh", "true");
               res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
             }
-
-            if (user.status === "BLOCKED" || user.status === "DELETED") {
-              throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is not active.");
-            }
-
             if (roles.length > 0 && !roles.includes(user.role as Role)) {
               throw new AppError(status.FORBIDDEN, "Forbidden access! No permission.");
             }

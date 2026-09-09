@@ -14,7 +14,7 @@ const router = Router();
 
 // ================= WORK SCHEDULE ROUTES =================
 router.post(
-  "/work-schedules",
+  "/work-schedule",
   auth([Role.ADMIN, Role.HR]),
   validateRequest(createWorkScheduleSchema),
   ScheduleHolidayController.createWorkSchedule

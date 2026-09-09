@@ -14,7 +14,7 @@ const router = Router();
 
 // ================= DEPARTMENT ROUTES =================
 router.post(
-  "/departments",
+  "/",
   auth([Role.ADMIN, Role.HR]),
   validateRequest(createDepartmentSchema),
   DepartmentPositionController.createDepartment

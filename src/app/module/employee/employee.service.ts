@@ -38,6 +38,8 @@ const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmploye
   const targetUserId = payload.userId || user.userId;
   const { employeeId, ...restPayload } = payload;
 
+
+
   // A. User একাউন্ট অস্তিত্বমান কিনা
   const userExist = await prisma.user.findUnique({
     where: { id: targetUserId },
@@ -63,14 +65,55 @@ const createEmployeeProfile = async (user: IRequestUser, payload: ICreateEmploye
     throw new AppError(status.CONFLICT, "Employee ID already exists!");
   }
 
+const department = await prisma.department.findUnique({
+  where: {
+    name: restPayload?.departmentName,
+  },
+  select: {
+    id: true,
+    name: true,
+  },
+});
+
+if (!department) {
+  throw new AppError(
+    status.NOT_FOUND,
+    `Department "${restPayload?.departmentName}" not found!`
+  );
+}
+
+const departmentId = department.id;
+
+const position = await prisma.position.findUnique({
+  where: {
+    title: restPayload?.title as string,
+  },
+  select: {
+    id: true,
+    title: true,
+    departmentId: true,
+  },
+});
+
+if (!position) {
+  throw new AppError(
+    status.NOT_FOUND,
+    `Position "${restPayload?.title}" not found!`
+  );
+}
+
+
   // D. প্রোফাইল ডাটাবেজে সেভ করা
   return await prisma.employeeProfile.create({
     data: {
       userId: targetUserId,
       employeeId,
       ...restPayload,
+      departmentId,
+      positionId: position.id,
       dateOfBirth: restPayload.dateOfBirth ? new Date(restPayload.dateOfBirth) : undefined,
       joiningDate: new Date(restPayload.joiningDate),
+
     },
     include: {
       user: { select: { id: true, email: true, role: true } },

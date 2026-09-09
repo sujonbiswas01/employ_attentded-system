@@ -15,7 +15,7 @@ model Department {
 
 model Position {
   id           String            @id @default(uuid())
-  title        String
+  title        String            @unique
   departmentId String
   department   Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   

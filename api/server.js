@@ -1,3 +1,381 @@
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+
+// node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js
+var require_object_assign = __commonJS({
+  "node_modules/.pnpm/object-assign@4.1.1/node_modules/object-assign/index.js"(exports, module) {
+    "use strict";
+    var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+    function toObject(val) {
+      if (val === null || val === void 0) {
+        throw new TypeError("Object.assign cannot be called with null or undefined");
+      }
+      return Object(val);
+    }
+    function shouldUseNative() {
+      try {
+        if (!Object.assign) {
+          return false;
+        }
+        var test1 = new String("abc");
+        test1[5] = "de";
+        if (Object.getOwnPropertyNames(test1)[0] === "5") {
+          return false;
+        }
+        var test2 = {};
+        for (var i = 0; i < 10; i++) {
+          test2["_" + String.fromCharCode(i)] = i;
+        }
+        var order2 = Object.getOwnPropertyNames(test2).map(function(n) {
+          return test2[n];
+        });
+        if (order2.join("") !== "0123456789") {
+          return false;
+        }
+        var test3 = {};
+        "abcdefghijklmnopqrst".split("").forEach(function(letter) {
+          test3[letter] = letter;
+        });
+        if (Object.keys(Object.assign({}, test3)).join("") !== "abcdefghijklmnopqrst") {
+          return false;
+        }
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+    module.exports = shouldUseNative() ? Object.assign : function(target, source) {
+      var from;
+      var to = toObject(target);
+      var symbols;
+      for (var s = 1; s < arguments.length; s++) {
+        from = Object(arguments[s]);
+        for (var key in from) {
+          if (hasOwnProperty.call(from, key)) {
+            to[key] = from[key];
+          }
+        }
+        if (getOwnPropertySymbols) {
+          symbols = getOwnPropertySymbols(from);
+          for (var i = 0; i < symbols.length; i++) {
+            if (propIsEnumerable.call(from, symbols[i])) {
+              to[symbols[i]] = from[symbols[i]];
+            }
+          }
+        }
+      }
+      return to;
+    };
+  }
+});
+
+// node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js
+var require_vary = __commonJS({
+  "node_modules/.pnpm/vary@1.1.2/node_modules/vary/index.js"(exports, module) {
+    "use strict";
+    module.exports = vary;
+    module.exports.append = append;
+    var FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+    function append(header, field) {
+      if (typeof header !== "string") {
+        throw new TypeError("header argument is required");
+      }
+      if (!field) {
+        throw new TypeError("field argument is required");
+      }
+      var fields = !Array.isArray(field) ? parse(String(field)) : field;
+      for (var j = 0; j < fields.length; j++) {
+        if (!FIELD_NAME_REGEXP.test(fields[j])) {
+          throw new TypeError("field argument contains an invalid header name");
+        }
+      }
+      if (header === "*") {
+        return header;
+      }
+      var val = header;
+      var vals = parse(header.toLowerCase());
+      if (fields.indexOf("*") !== -1 || vals.indexOf("*") !== -1) {
+        return "*";
+      }
+      for (var i = 0; i < fields.length; i++) {
+        var fld = fields[i].toLowerCase();
+        if (vals.indexOf(fld) === -1) {
+          vals.push(fld);
+          val = val ? val + ", " + fields[i] : fields[i];
+        }
+      }
+      return val;
+    }
+    function parse(header) {
+      var end = 0;
+      var list = [];
+      var start = 0;
+      for (var i = 0, len = header.length; i < len; i++) {
+        switch (header.charCodeAt(i)) {
+          case 32:
+            if (start === end) {
+              start = end = i + 1;
+            }
+            break;
+          case 44:
+            list.push(header.substring(start, end));
+            start = end = i + 1;
+            break;
+          default:
+            end = i + 1;
+            break;
+        }
+      }
+      list.push(header.substring(start, end));
+      return list;
+    }
+    function vary(res, field) {
+      if (!res || !res.getHeader || !res.setHeader) {
+        throw new TypeError("res argument is required");
+      }
+      var val = res.getHeader("Vary") || "";
+      var header = Array.isArray(val) ? val.join(", ") : String(val);
+      if (val = append(header, field)) {
+        res.setHeader("Vary", val);
+      }
+    }
+  }
+});
+
+// node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js
+var require_lib = __commonJS({
+  "node_modules/.pnpm/cors@2.8.6/node_modules/cors/lib/index.js"(exports, module) {
+    "use strict";
+    (function() {
+      "use strict";
+      var assign = require_object_assign();
+      var vary = require_vary();
+      var defaults = {
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        optionsSuccessStatus: 204
+      };
+      function isString(s) {
+        return typeof s === "string" || s instanceof String;
+      }
+      function isOriginAllowed(origin, allowedOrigin) {
+        if (Array.isArray(allowedOrigin)) {
+          for (var i = 0; i < allowedOrigin.length; ++i) {
+            if (isOriginAllowed(origin, allowedOrigin[i])) {
+              return true;
+            }
+          }
+          return false;
+        } else if (isString(allowedOrigin)) {
+          return origin === allowedOrigin;
+        } else if (allowedOrigin instanceof RegExp) {
+          return allowedOrigin.test(origin);
+        } else {
+          return !!allowedOrigin;
+        }
+      }
+      function configureOrigin(options, req) {
+        var requestOrigin = req.headers.origin, headers = [], isAllowed;
+        if (!options.origin || options.origin === "*") {
+          headers.push([{
+            key: "Access-Control-Allow-Origin",
+            value: "*"
+          }]);
+        } else if (isString(options.origin)) {
+          headers.push([{
+            key: "Access-Control-Allow-Origin",
+            value: options.origin
+          }]);
+          headers.push([{
+            key: "Vary",
+            value: "Origin"
+          }]);
+        } else {
+          isAllowed = isOriginAllowed(requestOrigin, options.origin);
+          headers.push([{
+            key: "Access-Control-Allow-Origin",
+            value: isAllowed ? requestOrigin : false
+          }]);
+          headers.push([{
+            key: "Vary",
+            value: "Origin"
+          }]);
+        }
+        return headers;
+      }
+      function configureMethods(options) {
+        var methods = options.methods;
+        if (methods.join) {
+          methods = options.methods.join(",");
+        }
+        return {
+          key: "Access-Control-Allow-Methods",
+          value: methods
+        };
+      }
+      function configureCredentials(options) {
+        if (options.credentials === true) {
+          return {
+            key: "Access-Control-Allow-Credentials",
+            value: "true"
+          };
+        }
+        return null;
+      }
+      function configureAllowedHeaders(options, req) {
+        var allowedHeaders = options.allowedHeaders || options.headers;
+        var headers = [];
+        if (!allowedHeaders) {
+          allowedHeaders = req.headers["access-control-request-headers"];
+          headers.push([{
+            key: "Vary",
+            value: "Access-Control-Request-Headers"
+          }]);
+        } else if (allowedHeaders.join) {
+          allowedHeaders = allowedHeaders.join(",");
+        }
+        if (allowedHeaders && allowedHeaders.length) {
+          headers.push([{
+            key: "Access-Control-Allow-Headers",
+            value: allowedHeaders
+          }]);
+        }
+        return headers;
+      }
+      function configureExposedHeaders(options) {
+        var headers = options.exposedHeaders;
+        if (!headers) {
+          return null;
+        } else if (headers.join) {
+          headers = headers.join(",");
+        }
+        if (headers && headers.length) {
+          return {
+            key: "Access-Control-Expose-Headers",
+            value: headers
+          };
+        }
+        return null;
+      }
+      function configureMaxAge(options) {
+        var maxAge = (typeof options.maxAge === "number" || options.maxAge) && options.maxAge.toString();
+        if (maxAge && maxAge.length) {
+          return {
+            key: "Access-Control-Max-Age",
+            value: maxAge
+          };
+        }
+        return null;
+      }
+      function applyHeaders(headers, res) {
+        for (var i = 0, n = headers.length; i < n; i++) {
+          var header = headers[i];
+          if (header) {
+            if (Array.isArray(header)) {
+              applyHeaders(header, res);
+            } else if (header.key === "Vary" && header.value) {
+              vary(res, header.value);
+            } else if (header.value) {
+              res.setHeader(header.key, header.value);
+            }
+          }
+        }
+      }
+      function cors2(options, req, res, next) {
+        var headers = [], method = req.method && req.method.toUpperCase && req.method.toUpperCase();
+        if (method === "OPTIONS") {
+          headers.push(configureOrigin(options, req));
+          headers.push(configureCredentials(options));
+          headers.push(configureMethods(options));
+          headers.push(configureAllowedHeaders(options, req));
+          headers.push(configureMaxAge(options));
+          headers.push(configureExposedHeaders(options));
+          applyHeaders(headers, res);
+          if (options.preflightContinue) {
+            next();
+          } else {
+            res.statusCode = options.optionsSuccessStatus;
+            res.setHeader("Content-Length", "0");
+            res.end();
+          }
+        } else {
+          headers.push(configureOrigin(options, req));
+          headers.push(configureCredentials(options));
+          headers.push(configureExposedHeaders(options));
+          applyHeaders(headers, res);
+          next();
+        }
+      }
+      function middlewareWrapper(o) {
+        var optionsCallback = null;
+        if (typeof o === "function") {
+          optionsCallback = o;
+        } else {
+          optionsCallback = function(req, cb) {
+            cb(null, o);
+          };
+        }
+        return function corsMiddleware(req, res, next) {
+          optionsCallback(req, function(err, options) {
+            if (err) {
+              next(err);
+            } else {
+              var corsOptions = assign({}, defaults, options);
+              var originCallback = null;
+              if (corsOptions.origin && typeof corsOptions.origin === "function") {
+                originCallback = corsOptions.origin;
+              } else if (corsOptions.origin) {
+                originCallback = function(origin, cb) {
+                  cb(null, corsOptions.origin);
+                };
+              }
+              if (originCallback) {
+                originCallback(req.headers.origin, function(err2, origin) {
+                  if (err2 || !origin) {
+                    next(err2);
+                  } else {
+                    corsOptions.origin = origin;
+                    cors2(corsOptions, req, res, next);
+                  }
+                });
+              } else {
+                next();
+              }
+            }
+          });
+        };
+      }
+      module.exports = middlewareWrapper;
+    })();
+  }
+});
+
 // src/app.ts
 import express from "express";
 import { toNodeHandler } from "better-auth/node";
@@ -21,7 +399,7 @@ var config = {
   "clientVersion": "7.8.0",
   "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   "activeProvider": "postgresql",
-  "inlineSchema": 'model User {\n  id            String     @id @default(uuid())\n  name          String\n  email         String     @unique\n  role          Role       @default(USER)\n  status        UserStatus @default(ACTIVE)\n  phone         String?\n  image         String\n  isDeleted     Boolean    @default(false)\n  deletedAt     DateTime?\n  bgimage       String?    @default("https://images.pexels.com/photos/4303031/pexels-photo-4303031.jpeg")\n  isActive      Boolean    @default(false)\n  emailVerified Boolean    @default(false)\n  createdAt     DateTime   @default(now())\n  updatedAt     DateTime   @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n  BLOCKED\n  DELETED\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
+  "inlineSchema": 'model Attendance {\n  id         String          @id @default(uuid())\n  employeeId String\n  employee   EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n\n  date     DateTime  @db.Date\n  checkIn  DateTime?\n  checkOut DateTime?\n\n  status AttendanceStatus @default(ABSENT)\n\n  workingHours   Float @default(0.0)\n  overtimeHours  Float @default(0.0)\n  lateMinutes    Int   @default(0)\n  earlyLeaveMins Int   @default(0)\n\n  checkInIp  String?\n  checkOutIp String?\n  notes      String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([employeeId, date])\n  @@index([date])\n  @@index([status])\n  @@map("attendances")\n}\n\nmodel AuditLog {\n  id     String  @id @default(uuid())\n  userId String?\n  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)\n\n  action    AuditAction\n  details   String\n  ipAddress String?\n\n  createdAt DateTime @default(now())\n\n  @@map("audit_logs")\n}\n\nmodel User {\n  id                   String    @id @default(uuid())\n  name                 String\n  email                String    @unique\n  role                 Role      @default(EMPLOYEE)\n  phone                String?\n  image                String\n  isDeleted            Boolean   @default(false)\n  deletedAt            DateTime?\n  bgimage              String?   @default("https://images.pexels.com/photos/4303031/pexels-photo-4303031.jpeg")\n  isActive             Boolean   @default(false)\n  emailVerified        Boolean   @default(false)\n  createdAt            DateTime  @default(now())\n  updatedAt            DateTime  @updatedAt\n  sessions             Session[]\n  passwordResetToken   String?\n  passwordResetExpires DateTime?\n\n  employeeProfile EmployeeProfile?\n  auditLogs       AuditLog[]\n  approvedLeaves  LeaveRequest[]   @relation("ApprovedByRelation")\n  accounts        Account[]\n\n  @@map("users")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Department {\n  id          String  @id @default(uuid())\n  name        String  @unique\n  code        String  @unique\n  description String?\n\n  employees EmployeeProfile[]\n  positions Position[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map("departments")\n}\n\nmodel Position {\n  id           String     @id @default(uuid())\n  title        String\n  departmentId String\n  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)\n\n  employees EmployeeProfile[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([title, departmentId])\n  @@map("positions")\n}\n\nmodel EmployeeProfile {\n  id     String @id @default(uuid())\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  employeeId  String    @unique\n  firstName   String\n  lastName    String\n  phone       String?\n  gender      Gender?\n  dateOfBirth DateTime?\n  joiningDate DateTime\n\n  departmentId String?\n  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)\n\n  positionId String?\n  position   Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)\n\n  employmentType EmploymentType @default(FULL_TIME)\n\n  workScheduleId String?\n  workSchedule   WorkSchedule? @relation(fields: [workScheduleId], references: [id], onDelete: SetNull)\n\n  attendances   Attendance[]\n  leaveRequests LeaveRequest[] @relation("EmployeeLeaves")\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map("employee_profiles")\n}\n\nenum Role {\n  ADMIN\n  HR\n  EMPLOYEE\n}\n\nenum Gender {\n  MALE\n  FEMALE\n  OTHER\n}\n\nenum EmploymentType {\n  FULL_TIME\n  PART_TIME\n  CONTRACT\n  INTERN\n}\n\nenum AttendanceStatus {\n  PRESENT\n  LATE\n  ABSENT\n  HALF_DAY\n  ON_LEAVE\n  HOLIDAY\n  WEEKEND\n}\n\nenum LeaveType {\n  CASUAL\n  SICK\n  ANNUAL\n  MATERNITY\n  PATERNITY\n  UNPAID\n}\n\nenum LeaveStatus {\n  PENDING\n  APPROVED\n  REJECTED\n  CANCELLED\n}\n\nenum AuditAction {\n  CREATE\n  UPDATE\n  DELETE\n  LOGIN\n  LOGOUT\n  CHECK_IN\n  CHECK_OUT\n  LEAVE_APPROVE\n  LEAVE_REJECT\n}\n\nmodel LeaveRequest {\n  id         String          @id @default(uuid())\n  employeeId String\n  employee   EmployeeProfile @relation("EmployeeLeaves", fields: [employeeId], references: [id], onDelete: Cascade)\n\n  leaveType LeaveType\n  startDate DateTime  @db.Date\n  endDate   DateTime  @db.Date\n  totalDays Int\n  reason    String\n\n  status LeaveStatus @default(PENDING)\n\n  approvedById String?\n  approvedBy   User?   @relation("ApprovedByRelation", fields: [approvedById], references: [id], onDelete: SetNull)\n  adminRemarks String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([employeeId])\n  @@index([status])\n  @@map("leave_requests")\n}\n\nmodel WorkSchedule {\n  id           String @id @default(uuid())\n  name         String @unique\n  startTime    String // e.g. "09:00"\n  endTime      String // e.g. "17:00"\n  graceMinutes Int    @default(15)\n  workDays     Int[] // Days array: [1, 2, 3, 4, 5] (1=Monday, 7=Sunday)\n\n  employees EmployeeProfile[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map("work_schedules")\n}\n\nmodel Holiday {\n  id          String   @id @default(uuid())\n  title       String\n  date        DateTime @unique @db.Date\n  description String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map("holidays")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -32,14 +410,14 @@ var config = {
     "graph": ""
   }
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"Role"},{"name":"status","kind":"enum","type":"UserStatus"},{"name":"phone","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"bgimage","kind":"scalar","type":"String"},{"name":"isActive","kind":"scalar","type":"Boolean"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse('{"models":{"Attendance":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"employeeId","kind":"scalar","type":"String"},{"name":"employee","kind":"object","type":"EmployeeProfile","relationName":"AttendanceToEmployeeProfile"},{"name":"date","kind":"scalar","type":"DateTime"},{"name":"checkIn","kind":"scalar","type":"DateTime"},{"name":"checkOut","kind":"scalar","type":"DateTime"},{"name":"status","kind":"enum","type":"AttendanceStatus"},{"name":"workingHours","kind":"scalar","type":"Float"},{"name":"overtimeHours","kind":"scalar","type":"Float"},{"name":"lateMinutes","kind":"scalar","type":"Int"},{"name":"earlyLeaveMins","kind":"scalar","type":"Int"},{"name":"checkInIp","kind":"scalar","type":"String"},{"name":"checkOutIp","kind":"scalar","type":"String"},{"name":"notes","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"attendances"},"AuditLog":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AuditLogToUser"},{"name":"action","kind":"enum","type":"AuditAction"},{"name":"details","kind":"scalar","type":"String"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"}],"dbName":"audit_logs"},"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"Role"},{"name":"phone","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"bgimage","kind":"scalar","type":"String"},{"name":"isActive","kind":"scalar","type":"Boolean"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"passwordResetToken","kind":"scalar","type":"String"},{"name":"passwordResetExpires","kind":"scalar","type":"DateTime"},{"name":"employeeProfile","kind":"object","type":"EmployeeProfile","relationName":"EmployeeProfileToUser"},{"name":"auditLogs","kind":"object","type":"AuditLog","relationName":"AuditLogToUser"},{"name":"approvedLeaves","kind":"object","type":"LeaveRequest","relationName":"ApprovedByRelation"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"users"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Department":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"code","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"employees","kind":"object","type":"EmployeeProfile","relationName":"DepartmentToEmployeeProfile"},{"name":"positions","kind":"object","type":"Position","relationName":"DepartmentToPosition"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"departments"},"Position":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"title","kind":"scalar","type":"String"},{"name":"departmentId","kind":"scalar","type":"String"},{"name":"department","kind":"object","type":"Department","relationName":"DepartmentToPosition"},{"name":"employees","kind":"object","type":"EmployeeProfile","relationName":"EmployeeProfileToPosition"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"positions"},"EmployeeProfile":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"EmployeeProfileToUser"},{"name":"employeeId","kind":"scalar","type":"String"},{"name":"firstName","kind":"scalar","type":"String"},{"name":"lastName","kind":"scalar","type":"String"},{"name":"phone","kind":"scalar","type":"String"},{"name":"gender","kind":"enum","type":"Gender"},{"name":"dateOfBirth","kind":"scalar","type":"DateTime"},{"name":"joiningDate","kind":"scalar","type":"DateTime"},{"name":"departmentId","kind":"scalar","type":"String"},{"name":"department","kind":"object","type":"Department","relationName":"DepartmentToEmployeeProfile"},{"name":"positionId","kind":"scalar","type":"String"},{"name":"position","kind":"object","type":"Position","relationName":"EmployeeProfileToPosition"},{"name":"employmentType","kind":"enum","type":"EmploymentType"},{"name":"workScheduleId","kind":"scalar","type":"String"},{"name":"workSchedule","kind":"object","type":"WorkSchedule","relationName":"EmployeeProfileToWorkSchedule"},{"name":"attendances","kind":"object","type":"Attendance","relationName":"AttendanceToEmployeeProfile"},{"name":"leaveRequests","kind":"object","type":"LeaveRequest","relationName":"EmployeeLeaves"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"employee_profiles"},"LeaveRequest":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"employeeId","kind":"scalar","type":"String"},{"name":"employee","kind":"object","type":"EmployeeProfile","relationName":"EmployeeLeaves"},{"name":"leaveType","kind":"enum","type":"LeaveType"},{"name":"startDate","kind":"scalar","type":"DateTime"},{"name":"endDate","kind":"scalar","type":"DateTime"},{"name":"totalDays","kind":"scalar","type":"Int"},{"name":"reason","kind":"scalar","type":"String"},{"name":"status","kind":"enum","type":"LeaveStatus"},{"name":"approvedById","kind":"scalar","type":"String"},{"name":"approvedBy","kind":"object","type":"User","relationName":"ApprovedByRelation"},{"name":"adminRemarks","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"leave_requests"},"WorkSchedule":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"startTime","kind":"scalar","type":"String"},{"name":"endTime","kind":"scalar","type":"String"},{"name":"graceMinutes","kind":"scalar","type":"Int"},{"name":"workDays","kind":"scalar","type":"Int"},{"name":"employees","kind":"object","type":"EmployeeProfile","relationName":"EmployeeProfileToWorkSchedule"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"work_schedules"},"Holiday":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"title","kind":"scalar","type":"String"},{"name":"date","kind":"scalar","type":"DateTime"},{"name":"description","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"holidays"}},"enums":{},"types":{}}');
 config.parameterizationSchema = {
-  strings: JSON.parse('["where","orderBy","cursor","user","sessions","accounts","_count","User.findUnique","User.findUniqueOrThrow","User.findFirst","User.findFirstOrThrow","User.findMany","data","User.createOne","User.createMany","User.createManyAndReturn","User.updateOne","User.updateMany","User.updateManyAndReturn","create","update","User.upsertOne","User.deleteOne","User.deleteMany","having","_min","_max","User.groupBy","User.aggregate","Session.findUnique","Session.findUniqueOrThrow","Session.findFirst","Session.findFirstOrThrow","Session.findMany","Session.createOne","Session.createMany","Session.createManyAndReturn","Session.updateOne","Session.updateMany","Session.updateManyAndReturn","Session.upsertOne","Session.deleteOne","Session.deleteMany","Session.groupBy","Session.aggregate","Account.findUnique","Account.findUniqueOrThrow","Account.findFirst","Account.findFirstOrThrow","Account.findMany","Account.createOne","Account.createMany","Account.createManyAndReturn","Account.updateOne","Account.updateMany","Account.updateManyAndReturn","Account.upsertOne","Account.deleteOne","Account.deleteMany","Account.groupBy","Account.aggregate","Verification.findUnique","Verification.findUniqueOrThrow","Verification.findFirst","Verification.findFirstOrThrow","Verification.findMany","Verification.createOne","Verification.createMany","Verification.createManyAndReturn","Verification.updateOne","Verification.updateMany","Verification.updateManyAndReturn","Verification.upsertOne","Verification.deleteOne","Verification.deleteMany","Verification.groupBy","Verification.aggregate","AND","OR","NOT","id","identifier","value","expiresAt","createdAt","updatedAt","equals","in","notIn","lt","lte","gt","gte","not","contains","startsWith","endsWith","accountId","providerId","userId","accessToken","refreshToken","idToken","accessTokenExpiresAt","refreshTokenExpiresAt","scope","password","token","ipAddress","userAgent","name","email","Role","role","UserStatus","status","phone","image","isDeleted","deletedAt","bgimage","isActive","emailVerified","every","some","none","is","isNot","connectOrCreate","upsert","createMany","set","disconnect","delete","connect","updateMany","deleteMany"]'),
-  graph: "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_ACANUAEAAAABVEAAAAABVUAAAAABYQEAAAABYgEAAAABYwEAAAABZAEAAAABZQEAAAABZgEAAAABZ0AAAAABaEAAAAABaQEAAAABagEAAAABAQwAAEEAMAEMAABBADAOAwAAnQEAIFABAJUBACFUQACWAQAhVUAAlgEAIWEBAJUBACFiAQCVAQAhYwEAlQEAIWQBAJsBACFlAQCbAQAhZgEAmwEAIWdAAJwBACFoQACcAQAhaQEAmwEAIWoBAJsBACECAAAACQAgDAAARAAgDVABAJUBACFUQACWAQAhVUAAlgEAIWEBAJUBACFiAQCVAQAhYwEAlQEAIWQBAJsBACFlAQCbAQAhZgEAmwEAIWdAAJwBACFoQACcAQAhaQEAmwEAIWoBAJsBACECAAAABwAgDAAARgAgAgAAAAcAIAwAAEYAIAMAAAAJACATAAA_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_AQAwTgAAwAEAEE8AAL8BADBQAQByACFTQABzACFUQABzACFVQABzACFjAQByACFrAQByACFsAQCKAQAhbQEAigEAIQtNAAC_AQAwTgAAwAEAEE8AAL8BADBQAQByACFTQABzACFUQABzACFVQABzACFjAQByACFrAQByACFsAQCKAQAhbQEAigEAIQdQAQCVAQAhU0AAlgEAIVRAAJYBACFVQACWAQAhawEAlQEAIWwBAJsBACFtAQCbAQAhB1ABAJUBACFTQACWAQAhVEAAlgEAIVVAAJYBACFrAQCVAQAhbAEAmwEAIW0BAJsBACEHUAEAAAABU0AAAAABVEAAAAABVUAAAAABawEAAAABbAEAAAABbQEAAAABBBMAALgBADCAAQAAuQEAMIIBAAC7AQAghgEAALwBADAEEwAArAEAMIABAACtAQAwggEAAK8BACCGAQAAsAEAMAAABQQAAMYBACAFAADHAQAgdAAAlwEAIHcAAJcBACB4AACXAQAgB1ABAAAAAVNAAAAAAVRAAAAAAVVAAAAAAWsBAAAAAWwBAAAAAW0BAAAAAQxQAQAAAAFUQAAAAAFVQAAAAAFhAQAAAAFiAQAAAAFkAQAAAAFlAQAAAAFmAQAAAAFnQAAAAAFoQAAAAAFpAQAAAAFqAQAAAAEPBQAAxQEAIFABAAAAAVRAAAAAAVVAAAAAAW4BAAAAAW8BAAAAAXEAAABxAnMAAABzAnQBAAAAAXUBAAAAAXYgAAAAAXdAAAAAAXgBAAAAAXkgAAAAAXogAAAAAQIAAAABACATAADLAQAgAwAAAA4AIBMAAMsBACAUAADPAQAgEQAAAA4AIAUAAKsBACAMAADPAQAgUAEAlQEAIVRAAJYBACFVQACWAQAhbgEAlQEAIW8BAJUBACFxAACnAXEicwAAqAFzInQBAJsBACF1AQCVAQAhdiAAqQEAIXdAAJwBACF4AQCbAQAheSAAqQEAIXogAKkBACEPBQAAqwEAIFABAJUBACFUQACWAQAhVUAAlgEAIW4BAJUBACFvAQCVAQAhcQAApwFxInMAAKgBcyJ0AQCbAQAhdQEAlQEAIXYgAKkBACF3QACcAQAheAEAmwEAIXkgAKkBACF6IACpAQAhDwQAAMQBACBQAQAAAAFUQAAAAAFVQAAAAAFuAQAAAAFvAQAAAAFxAAAAcQJzAAAAcwJ0AQAAAAF1AQAAAAF2IAAAAAF3QAAAAAF4AQAAAAF5IAAAAAF6IAAAAAECAAAAAQAgEwAA0AEAIAMAAAAOACATAADQAQAgFAAA1AEAIBEAAAAOACAEAACqAQAgDAAA1AEAIFABAJUBACFUQACWAQAhVUAAlgEAIW4BAJUBACFvAQCVAQAhcQAApwFxInMAAKgBcyJ0AQCbAQAhdQEAlQEAIXYgAKkBACF3QACcAQAheAEAmwEAIXkgAKkBACF6IACpAQAhDwQAAKoBACBQAQCVAQAhVEAAlgEAIVVAAJYBACFuAQCVAQAhbwEAlQEAIXEAAKcBcSJzAACoAXMidAEAmwEAIXUBAJUBACF2IACpAQAhd0AAnAEAIXgBAJsBACF5IACpAQAheiAAqQEAIQMEBgIFCgMGAAQBAwABAQMAAQIECwAFDAAAAAADBgAJGQAKGgALAAAAAwYACRkAChoACwEDAAEBAwABAwYAEBkAERoAEgAAAAMGABAZABEaABIBAwABAQMAAQMGABcZABgaABkAAAADBgAXGQAYGgAZAAAAAwYAHxkAIBoAIQAAAAMGAB8ZACAaACEHAgEIDQEJEAEKEQELEgENFAEOFgUPFwYQGQERGwUSHAcVHQEWHgEXHwUbIggcIwwdJAIeJQIfJgIgJwIhKAIiKgIjLAUkLQ0lLwImMQUnMg4oMwIpNAIqNQUrOA8sORMtOgMuOwMvPAMwPQMxPgMyQAMzQgU0QxQ1RQM2RwU3SBU4SQM5SgM6SwU7ThY8Txo9URs-Uhs_VRtAVhtBVxtCWRtDWwVEXBxFXhtGYAVHYR1IYhtJYxtKZAVLZx5MaCI"
+  strings: JSON.parse('["where","orderBy","cursor","user","sessions","employeeProfile","auditLogs","employee","approvedBy","approvedLeaves","accounts","_count","employees","department","positions","position","workSchedule","attendances","leaveRequests","Attendance.findUnique","Attendance.findUniqueOrThrow","Attendance.findFirst","Attendance.findFirstOrThrow","Attendance.findMany","data","Attendance.createOne","Attendance.createMany","Attendance.createManyAndReturn","Attendance.updateOne","Attendance.updateMany","Attendance.updateManyAndReturn","create","update","Attendance.upsertOne","Attendance.deleteOne","Attendance.deleteMany","having","_avg","_sum","_min","_max","Attendance.groupBy","Attendance.aggregate","AuditLog.findUnique","AuditLog.findUniqueOrThrow","AuditLog.findFirst","AuditLog.findFirstOrThrow","AuditLog.findMany","AuditLog.createOne","AuditLog.createMany","AuditLog.createManyAndReturn","AuditLog.updateOne","AuditLog.updateMany","AuditLog.updateManyAndReturn","AuditLog.upsertOne","AuditLog.deleteOne","AuditLog.deleteMany","AuditLog.groupBy","AuditLog.aggregate","User.findUnique","User.findUniqueOrThrow","User.findFirst","User.findFirstOrThrow","User.findMany","User.createOne","User.createMany","User.createManyAndReturn","User.updateOne","User.updateMany","User.updateManyAndReturn","User.upsertOne","User.deleteOne","User.deleteMany","User.groupBy","User.aggregate","Session.findUnique","Session.findUniqueOrThrow","Session.findFirst","Session.findFirstOrThrow","Session.findMany","Session.createOne","Session.createMany","Session.createManyAndReturn","Session.updateOne","Session.updateMany","Session.updateManyAndReturn","Session.upsertOne","Session.deleteOne","Session.deleteMany","Session.groupBy","Session.aggregate","Account.findUnique","Account.findUniqueOrThrow","Account.findFirst","Account.findFirstOrThrow","Account.findMany","Account.createOne","Account.createMany","Account.createManyAndReturn","Account.updateOne","Account.updateMany","Account.updateManyAndReturn","Account.upsertOne","Account.deleteOne","Account.deleteMany","Account.groupBy","Account.aggregate","Verification.findUnique","Verification.findUniqueOrThrow","Verification.findFirst","Verification.findFirstOrThrow","Verification.findMany","Verification.createOne","Verification.createMany","Verification.createManyAndReturn","Verification.updateOne","Verification.updateMany","Verification.updateManyAndReturn","Verification.upsertOne","Verification.deleteOne","Verification.deleteMany","Verification.groupBy","Verification.aggregate","Department.findUnique","Department.findUniqueOrThrow","Department.findFirst","Department.findFirstOrThrow","Department.findMany","Department.createOne","Department.createMany","Department.createManyAndReturn","Department.updateOne","Department.updateMany","Department.updateManyAndReturn","Department.upsertOne","Department.deleteOne","Department.deleteMany","Department.groupBy","Department.aggregate","Position.findUnique","Position.findUniqueOrThrow","Position.findFirst","Position.findFirstOrThrow","Position.findMany","Position.createOne","Position.createMany","Position.createManyAndReturn","Position.updateOne","Position.updateMany","Position.updateManyAndReturn","Position.upsertOne","Position.deleteOne","Position.deleteMany","Position.groupBy","Position.aggregate","EmployeeProfile.findUnique","EmployeeProfile.findUniqueOrThrow","EmployeeProfile.findFirst","EmployeeProfile.findFirstOrThrow","EmployeeProfile.findMany","EmployeeProfile.createOne","EmployeeProfile.createMany","EmployeeProfile.createManyAndReturn","EmployeeProfile.updateOne","EmployeeProfile.updateMany","EmployeeProfile.updateManyAndReturn","EmployeeProfile.upsertOne","EmployeeProfile.deleteOne","EmployeeProfile.deleteMany","EmployeeProfile.groupBy","EmployeeProfile.aggregate","LeaveRequest.findUnique","LeaveRequest.findUniqueOrThrow","LeaveRequest.findFirst","LeaveRequest.findFirstOrThrow","LeaveRequest.findMany","LeaveRequest.createOne","LeaveRequest.createMany","LeaveRequest.createManyAndReturn","LeaveRequest.updateOne","LeaveRequest.updateMany","LeaveRequest.updateManyAndReturn","LeaveRequest.upsertOne","LeaveRequest.deleteOne","LeaveRequest.deleteMany","LeaveRequest.groupBy","LeaveRequest.aggregate","WorkSchedule.findUnique","WorkSchedule.findUniqueOrThrow","WorkSchedule.findFirst","WorkSchedule.findFirstOrThrow","WorkSchedule.findMany","WorkSchedule.createOne","WorkSchedule.createMany","WorkSchedule.createManyAndReturn","WorkSchedule.updateOne","WorkSchedule.updateMany","WorkSchedule.updateManyAndReturn","WorkSchedule.upsertOne","WorkSchedule.deleteOne","WorkSchedule.deleteMany","WorkSchedule.groupBy","WorkSchedule.aggregate","Holiday.findUnique","Holiday.findUniqueOrThrow","Holiday.findFirst","Holiday.findFirstOrThrow","Holiday.findMany","Holiday.createOne","Holiday.createMany","Holiday.createManyAndReturn","Holiday.updateOne","Holiday.updateMany","Holiday.updateManyAndReturn","Holiday.upsertOne","Holiday.deleteOne","Holiday.deleteMany","Holiday.groupBy","Holiday.aggregate","AND","OR","NOT","id","title","date","description","createdAt","updatedAt","equals","in","notIn","lt","lte","gt","gte","contains","startsWith","endsWith","not","name","startTime","endTime","graceMinutes","workDays","has","hasEvery","hasSome","every","some","none","employeeId","LeaveType","leaveType","startDate","endDate","totalDays","reason","LeaveStatus","status","approvedById","adminRemarks","userId","firstName","lastName","phone","Gender","gender","dateOfBirth","joiningDate","departmentId","positionId","EmploymentType","employmentType","workScheduleId","code","identifier","value","expiresAt","accountId","providerId","accessToken","refreshToken","idToken","accessTokenExpiresAt","refreshTokenExpiresAt","scope","password","token","ipAddress","userAgent","email","Role","role","image","isDeleted","deletedAt","bgimage","isActive","emailVerified","passwordResetToken","passwordResetExpires","AuditAction","action","details","checkIn","checkOut","AttendanceStatus","workingHours","overtimeHours","lateMinutes","earlyLeaveMins","checkInIp","checkOutIp","notes","title_departmentId","employeeId_date","is","isNot","connectOrCreate","upsert","createMany","set","disconnect","delete","connect","updateMany","deleteMany","increment","decrement","multiply","divide","push"]'),
+  graph: "2wVswAEUBwAAnwMAINsBAACcAwAw3AEAAC4AEN0BAACcAwAw3gEBAAAAAeABQADfAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAhggIAAJ0DswIisAJAAIwDACGxAkAAjAMAIbMCCACeAwAhtAIIAJ4DACG1AgIA5wIAIbYCAgDnAgAhtwIBAOACACG4AgEA4AIAIbkCAQDgAgAhuwIAALMDACABAAAAAQAgDAMAAKYDACDbAQAAsgMAMNwBAAADABDdAQAAsgMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlQJAAN8CACGfAgEA3gIAIaACAQDgAgAhoQIBAOACACEDAwAAlwUAIKACAAC0AwAgoQIAALQDACAMAwAApgMAINsBAACyAwAw3AEAAAMAEN0BAACyAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACGFAgEA3gIAIZUCQADfAgAhnwIBAAAAAaACAQDgAgAhoQIBAOACACEDAAAAAwAgAQAABAAwAgAABQAgGAMAAKYDACANAACnAwAgDwAAqAMAIBAAAKkDACARAACqAwAgEgAAkAMAINsBAACjAwAw3AEAAAcAEN0BAACjAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGFAgEA3gIAIYYCAQDeAgAhhwIBAN4CACGIAgEA4AIAIYoCAACkA4oCI4sCQACMAwAhjAJAAN8CACGNAgEA4AIAIY4CAQDgAgAhkAIAAKUDkAIikQIBAOACACEBAAAABwAgCgMAAK8DACDbAQAAsAMAMNwBAAAJABDdAQAAsAMAMN4BAQDeAgAh4gFAAN8CACGFAgEA4AIAIaACAQDgAgAhrgIAALEDrgIirwIBAN4CACEDAwAAlwUAIIUCAAC0AwAgoAIAALQDACAKAwAArwMAINsBAACwAwAw3AEAAAkAEN0BAACwAwAw3gEBAAAAAeIBQADfAgAhhQIBAOACACGgAgEA4AIAIa4CAACxA64CIq8CAQDeAgAhAwAAAAkAIAEAAAoAMAIAAAsAIBcEAACNAwAgBQAAjgMAIAYAAI8DACAJAACQAwAgCgAAkQMAINsBAACJAwAw3AEAAA0AEN0BAACJAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh7wEBAN4CACGIAgEA4AIAIaICAQDeAgAhpAIAAIoDpAIipQIBAN4CACGmAiAAiwMAIacCQACMAwAhqAIBAOACACGpAiAAiwMAIaoCIACLAwAhqwIBAOACACGsAkAAjAMAIQEAAAANACARBwAAnwMAIAgAAK8DACDbAQAArAMAMNwBAAAPABDdAQAArAMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAh_AEAAK0D_AEi_QFAAN8CACH-AUAA3wIAIf8BAgDnAgAhgAIBAN4CACGCAgAArgOCAiKDAgEA4AIAIYQCAQDgAgAhBAcAAIYFACAIAACXBQAggwIAALQDACCEAgAAtAMAIBEHAACfAwAgCAAArwMAINsBAACsAwAw3AEAAA8AEN0BAACsAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACH6AQEA3gIAIfwBAACtA_wBIv0BQADfAgAh_gFAAN8CACH_AQIA5wIAIYACAQDeAgAhggIAAK4DggIigwIBAOACACGEAgEA4AIAIQMAAAAPACABAAAQADACAAARACABAAAADQAgEQMAAKYDACDbAQAAqwMAMNwBAAAUABDdAQAAqwMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlgIBAN4CACGXAgEA3gIAIZgCAQDgAgAhmQIBAOACACGaAgEA4AIAIZsCQACMAwAhnAJAAIwDACGdAgEA4AIAIZ4CAQDgAgAhCAMAAJcFACCYAgAAtAMAIJkCAAC0AwAgmgIAALQDACCbAgAAtAMAIJwCAAC0AwAgnQIAALQDACCeAgAAtAMAIBEDAACmAwAg2wEAAKsDADDcAQAAFAAQ3QEAAKsDADDeAQEAAAAB4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlgIBAN4CACGXAgEA3gIAIZgCAQDgAgAhmQIBAOACACGaAgEA4AIAIZsCQACMAwAhnAJAAIwDACGdAgEA4AIAIZ4CAQDgAgAhAwAAABQAIAEAABUAMAIAABYAIAEAAAADACABAAAACQAgAQAAAA8AIAEAAAAUACALDAAA6AIAIA4AAP0CACDbAQAA_AIAMNwBAAAcABDdAQAA_AIAMN4BAQDeAgAh4QEBAOACACHiAUAA3wIAIeMBQADfAgAh7wEBAN4CACGSAgEA3gIAIQEAAAAcACAMAwAAlwUAIA0AAJYFACAPAACYBQAgEAAAmQUAIBEAAJoFACASAACIBQAgiAIAALQDACCKAgAAtAMAIIsCAAC0AwAgjQIAALQDACCOAgAAtAMAIJECAAC0AwAgGAMAAKYDACANAACnAwAgDwAAqAMAIBAAAKkDACARAACqAwAgEgAAkAMAINsBAACjAwAw3AEAAAcAEN0BAACjAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACH6AQEAAAABhQIBAAAAAYYCAQDeAgAhhwIBAN4CACGIAgEA4AIAIYoCAACkA4oCI4sCQACMAwAhjAJAAN8CACGNAgEA4AIAIY4CAQDgAgAhkAIAAKUDkAIikQIBAOACACEDAAAABwAgAQAAHgAwAgAAHwAgCgwAAOgCACANAACiAwAg2wEAAKEDADDcAQAAIQAQ3QEAAKEDADDeAQEA3gIAId8BAQDeAgAh4gFAAN8CACHjAUAA3wIAIY0CAQDeAgAhAgwAAPwDACANAACWBQAgCwwAAOgCACANAACiAwAg2wEAAKEDADDcAQAAIQAQ3QEAAKEDADDeAQEAAAAB3wEBAN4CACHiAUAA3wIAIeMBQADfAgAhjQIBAN4CACG6AgAAoAMAIAMAAAAhACABAAAiADACAAAjACADAAAABwAgAQAAHgAwAgAAHwAgAQAAAAcAIAEAAAAHACABAAAAIQAgAQAAACEAIAwMAADoAgAg2wEAAOYCADDcAQAAKgAQ3QEAAOYCADDeAQEA3gIAIeIBQADfAgAh4wFAAN8CACHvAQEA3gIAIfABAQDeAgAh8QEBAN4CACHyAQIA5wIAIfMBAADjAgAgAQAAACoAIAMAAAAHACABAAAeADACAAAfACABAAAABwAgEwcAAJ8DACDbAQAAnAMAMNwBAAAuABDdAQAAnAMAMN4BAQDeAgAh4AFAAN8CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGCAgAAnQOzAiKwAkAAjAMAIbECQACMAwAhswIIAJ4DACG0AggAngMAIbUCAgDnAgAhtgICAOcCACG3AgEA4AIAIbgCAQDgAgAhuQIBAOACACEGBwAAhgUAILACAAC0AwAgsQIAALQDACC3AgAAtAMAILgCAAC0AwAguQIAALQDACADAAAALgAgAQAALwAwAgAAAQAgAwAAAA8AIAEAABAAMAIAABEAIAEAAAAuACABAAAADwAgAQAAAAEAIAMAAAAuACABAAAvADACAAABACADAAAALgAgAQAALwAwAgAAAQAgAwAAAC4AIAEAAC8AMAIAAAEAIBAHAACVBQAg3gEBAAAAAeABQAAAAAHiAUAAAAAB4wFAAAAAAfoBAQAAAAGCAgAAALMCArACQAAAAAGxAkAAAAABswIIAAAAAbQCCAAAAAG1AgIAAAABtgICAAAAAbcCAQAAAAG4AgEAAAABuQIBAAAAAQEYAAA4ACAP3gEBAAAAAeABQAAAAAHiAUAAAAAB4wFAAAAAAfoBAQAAAAGCAgAAALMCArACQAAAAAGxAkAAAAABswIIAAAAAbQCCAAAAAG1AgIAAAABtgICAAAAAbcCAQAAAAG4AgEAAAABuQIBAAAAAQEYAAA6ADABGAAAOgAwEAcAAJQFACDeAQEAuAMAIeABQAC5AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhggIAAPADswIisAJAAM4DACGxAkAAzgMAIbMCCADxAwAhtAIIAPEDACG1AgIAwAMAIbYCAgDAAwAhtwIBALoDACG4AgEAugMAIbkCAQC6AwAhAgAAAAEAIBgAAD0AIA_eAQEAuAMAIeABQAC5AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhggIAAPADswIisAJAAM4DACGxAkAAzgMAIbMCCADxAwAhtAIIAPEDACG1AgIAwAMAIbYCAgDAAwAhtwIBALoDACG4AgEAugMAIbkCAQC6AwAhAgAAAC4AIBgAAD8AIAIAAAAuACAYAAA_ACADAAAAAQAgHwAAOAAgIAAAPQAgAQAAAAEAIAEAAAAuACAKCwAAjwUAICUAAJAFACAmAACTBQAgJwAAkgUAICgAAJEFACCwAgAAtAMAILECAAC0AwAgtwIAALQDACC4AgAAtAMAILkCAAC0AwAgEtsBAACWAwAw3AEAAEYAEN0BAACWAwAw3gEBANICACHgAUAA0wIAIeIBQADTAgAh4wFAANMCACH6AQEA0gIAIYICAACXA7MCIrACQADyAgAhsQJAAPICACGzAggAmAMAIbQCCACYAwAhtQICAOICACG2AgIA4gIAIbcCAQDUAgAhuAIBANQCACG5AgEA1AIAIQMAAAAuACABAABFADAkAABGACADAAAALgAgAQAALwAwAgAAAQAgAQAAAAsAIAEAAAALACADAAAACQAgAQAACgAwAgAACwAgAwAAAAkAIAEAAAoAMAIAAAsAIAMAAAAJACABAAAKADACAAALACAHAwAAjgUAIN4BAQAAAAHiAUAAAAABhQIBAAAAAaACAQAAAAGuAgAAAK4CAq8CAQAAAAEBGAAATgAgBt4BAQAAAAHiAUAAAAABhQIBAAAAAaACAQAAAAGuAgAAAK4CAq8CAQAAAAEBGAAAUAAwARgAAFAAMAEAAAANACAHAwAAjQUAIN4BAQC4AwAh4gFAALkDACGFAgEAugMAIaACAQC6AwAhrgIAAOwErgIirwIBALgDACECAAAACwAgGAAAVAAgBt4BAQC4AwAh4gFAALkDACGFAgEAugMAIaACAQC6AwAhrgIAAOwErgIirwIBALgDACECAAAACQAgGAAAVgAgAgAAAAkAIBgAAFYAIAEAAAANACADAAAACwAgHwAATgAgIAAAVAAgAQAAAAsAIAEAAAAJACAFCwAAigUAICcAAIwFACAoAACLBQAghQIAALQDACCgAgAAtAMAIAnbAQAAkgMAMNwBAABeABDdAQAAkgMAMN4BAQDSAgAh4gFAANMCACGFAgEA1AIAIaACAQDUAgAhrgIAAJMDrgIirwIBANICACEDAAAACQAgAQAAXQAwJAAAXgAgAwAAAAkAIAEAAAoAMAIAAAsAIBcEAACNAwAgBQAAjgMAIAYAAI8DACAJAACQAwAgCgAAkQMAINsBAACJAwAw3AEAAA0AEN0BAACJAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACHvAQEA3gIAIYgCAQDgAgAhogIBAAAAAaQCAACKA6QCIqUCAQDeAgAhpgIgAIsDACGnAkAAjAMAIagCAQDgAgAhqQIgAIsDACGqAiAAiwMAIasCAQDgAgAhrAJAAIwDACEBAAAAYQAgAQAAAGEAIAoEAACFBQAgBQAAhgUAIAYAAIcFACAJAACIBQAgCgAAiQUAIIgCAAC0AwAgpwIAALQDACCoAgAAtAMAIKsCAAC0AwAgrAIAALQDACADAAAADQAgAQAAZAAwAgAAYQAgAwAAAA0AIAEAAGQAMAIAAGEAIAMAAAANACABAABkADACAABhACAUBAAAgAUAIAUAAIEFACAGAACCBQAgCQAAgwUAIAoAAIQFACDeAQEAAAAB4gFAAAAAAeMBQAAAAAHvAQEAAAABiAIBAAAAAaICAQAAAAGkAgAAAKQCAqUCAQAAAAGmAiAAAAABpwJAAAAAAagCAQAAAAGpAiAAAAABqgIgAAAAAasCAQAAAAGsAkAAAAABARgAAGgAIA_eAQEAAAAB4gFAAAAAAeMBQAAAAAHvAQEAAAABiAIBAAAAAaICAQAAAAGkAgAAAKQCAqUCAQAAAAGmAiAAAAABpwJAAAAAAagCAQAAAAGpAiAAAAABqgIgAAAAAasCAQAAAAGsAkAAAAABARgAAGoAMAEYAABqADAUBAAAyAQAIAUAAMkEACAGAADKBAAgCQAAywQAIAoAAMwEACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACHvAQEAuAMAIYgCAQC6AwAhogIBALgDACGkAgAAxgSkAiKlAgEAuAMAIaYCIADHBAAhpwJAAM4DACGoAgEAugMAIakCIADHBAAhqgIgAMcEACGrAgEAugMAIawCQADOAwAhAgAAAGEAIBgAAG0AIA_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_wIAMNwBAACoAQAQ3QEAAP8CADDeAQEAAAAB4gFAAN8CACHjAUAA3wIAIZMCAQDeAgAhlAIBAN4CACGVAkAA3wIAIQEAAAClAQAgAQAAAKUBACAJ2wEAAP8CADDcAQAAqAEAEN0BAAD_AgAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAhkwIBAN4CACGUAgEA3gIAIZUCQADfAgAhAAMAAACoAQAgAQAAqQEAMAIAAKUBACADAAAAqAEAIAEAAKkBADACAAClAQAgAwAAAKgBACABAACpAQAwAgAApQEAIAbeAQEAAAAB4gFAAAAAAeMBQAAAAAGTAgEAAAABlAIBAAAAAZUCQAAAAAEBGAAArQEAIAbeAQEAAAAB4gFAAAAAAeMBQAAAAAGTAgEAAAABlAIBAAAAAZUCQAAAAAEBGAAArwEAMAEYAACvAQAwBt4BAQC4AwAh4gFAALkDACHjAUAAuQMAIZMCAQC4AwAhlAIBALgDACGVAkAAuQMAIQIAAAClAQAgGAAAsgEAIAbeAQEAuAMAIeIBQAC5AwAh4wFAALkDACGTAgEAuAMAIZQCAQC4AwAhlQJAALkDACECAAAAqAEAIBgAALQBACACAAAAqAEAIBgAALQBACADAAAApQEAIB8AAK0BACAgAACyAQAgAQAAAKUBACABAAAAqAEAIAMLAAC2BAAgJwAAuAQAICgAALcEACAJ2wEAAP4CADDcAQAAuwEAEN0BAAD-AgAw3gEBANICACHiAUAA0wIAIeMBQADTAgAhkwIBANICACGUAgEA0gIAIZUCQADTAgAhAwAAAKgBACABAAC6AQAwJAAAuwEAIAMAAACoAQAgAQAAqQEAMAIAAKUBACALDAAA6AIAIA4AAP0CACDbAQAA_AIAMNwBAAAcABDdAQAA_AIAMN4BAQAAAAHhAQEA4AIAIeIBQADfAgAh4wFAAN8CACHvAQEAAAABkgIBAAAAAQEAAAC-AQAgAQAAAL4BACADDAAA_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-gEBAAAAAfwBAAAA_AEC_QFAAAAAAf4BQAAAAAH_AQIAAAABgAIBAAAAAYICAAAAggICgwIBAAAAAYQCAQAAAAEBGAAAjQIAIAzeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAAB_AEAAAD8AQL9AUAAAAAB_gFAAAAAAf8BAgAAAAGAAgEAAAABggIAAACCAgKDAgEAAAABhAIBAAAAAQEYAACPAgAwARgAAI8CADABAAAADQAgDgcAAIIEACAIAADjAwAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh-gEBALgDACH8AQAA4AP8ASL9AUAAuQMAIf4BQAC5AwAh_wECAMADACGAAgEAuAMAIYICAADhA4ICIoMCAQC6AwAhhAIBALoDACECAAAAEQAgGAAAkwIAIAzeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIfwBAADgA_wBIv0BQAC5AwAh_gFAALkDACH_AQIAwAMAIYACAQC4AwAhggIAAOEDggIigwIBALoDACGEAgEAugMAIQIAAAAPACAYAACVAgAgAgAAAA8AIBgAAJUCACABAAAADQAgAwAAABEAIB8AAI0CACAgAACTAgAgAQAAABEAIAEAAAAPACAHCwAA_QMAICUAAP4DACAmAACBBAAgJwAAgAQAICgAAP8DACCDAgAAtAMAIIQCAAC0AwAgD9sBAADpAgAw3AEAAJ0CABDdAQAA6QIAMN4BAQDSAgAh4gFAANMCACHjAUAA0wIAIfoBAQDSAgAh_AEAAOoC_AEi_QFAANMCACH-AUAA0wIAIf8BAgDiAgAhgAIBANICACGCAgAA6wKCAiKDAgEA1AIAIYQCAQDUAgAhAwAAAA8AIAEAAJwCADAkAACdAgAgAwAAAA8AIAEAABAAMAIAABEAIAwMAADoAgAg2wEAAOYCADDcAQAAKgAQ3QEAAOYCADDeAQEAAAAB4gFAAN8CACHjAUAA3wIAIe8BAQAAAAHwAQEA3gIAIfEBAQDeAgAh8gECAOcCACHzAQAA4wIAIAEAAACgAgAgAQAAAKACACABDAAA_AMAIAMAAAAqACABAACjAgAwAgAAoAIAIAMAAAAqACABAACjAgAwAgAAoAIAIAMAAAAqACABAACjAgAwAgAAoAIAIAkMAAD7AwAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB7wEBAAAAAfABAQAAAAHxAQEAAAAB8gECAAAAAfMBAAD6AwAgARgAAKcCACAI3gEBAAAAAeIBQAAAAAHjAUAAAAAB7wEBAAAAAfABAQAAAAHxAQEAAAAB8gECAAAAAfMBAAD6AwAgARgAAKkCADABGAAAqQIAMAkMAADCAwAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACHwAQEAuAMAIfEBAQC4AwAh8gECAMADACHzAQAAwQMAIAIAAACgAgAgGAAArAIAIAjeAQEAuAMAIeIBQAC5AwAh4wFAALkDACHvAQEAuAMAIfABAQC4AwAh8QEBALgDACHyAQIAwAMAIfMBAADBAwAgAgAAACoAIBgAAK4CACACAAAAKgAgGAAArgIAIAMAAACgAgAgHwAApwIAICAAAKwCACABAAAAoAIAIAEAAAAqACAFCwAAuwMAICUAALwDACAmAAC_AwAgJwAAvgMAICgAAL0DACAL2wEAAOECADDcAQAAtQIAEN0BAADhAgAw3gEBANICACHiAUAA0wIAIeMBQADTAgAh7wEBANICACHwAQEA0gIAIfEBAQDSAgAh8gECAOICACHzAQAA4wIAIAMAAAAqACABAAC0AgAwJAAAtQIAIAMAAAAqACABAACjAgAwAgAAoAIAIAnbAQAA3QIAMNwBAAC7AgAQ3QEAAN0CADDeAQEAAAAB3wEBAN4CACHgAUAAAAAB4QEBAOACACHiAUAA3wIAIeMBQADfAgAhAQAAALgCACABAAAAuAIAIAnbAQAA3QIAMNwBAAC7AgAQ3QEAAN0CADDeAQEA3gIAId8BAQDeAgAh4AFAAN8CACHhAQEA4AIAIeIBQADfAgAh4wFAAN8CACEB4QEAALQDACADAAAAuwIAIAEAALwCADACAAC4AgAgAwAAALsCACABAAC8AgAwAgAAuAIAIAMAAAC7AgAgAQAAvAIAMAIAALgCACAG3gEBAAAAAd8BAQAAAAHgAUAAAAAB4QEBAAAAAeIBQAAAAAHjAUAAAAABARgAAMACACAG3gEBAAAAAd8BAQAAAAHgAUAAAAAB4QEBAAAAAeIBQAAAAAHjAUAAAAABARgAAMICADABGAAAwgIAMAbeAQEAuAMAId8BAQC4AwAh4AFAALkDACHhAQEAugMAIeIBQAC5AwAh4wFAALkDACECAAAAuAIAIBgAAMUCACAG3gEBALgDACHfAQEAuAMAIeABQAC5AwAh4QEBALoDACHiAUAAuQMAIeMBQAC5AwAhAgAAALsCACAYAADHAgAgAgAAALsCACAYAADHAgAgAwAAALgCACAfAADAAgAgIAAAxQIAIAEAAAC4AgAgAQAAALsCACAECwAAtQMAICcAALcDACAoAAC2AwAg4QEAALQDACAJ2wEAANECADDcAQAAzgIAEN0BAADRAgAw3gEBANICACHfAQEA0gIAIeABQADTAgAh4QEBANQCACHiAUAA0wIAIeMBQADTAgAhAwAAALsCACABAADNAgAwJAAAzgIAIAMAAAC7AgAgAQAAvAIAMAIAALgCACAJ2wEAANECADDcAQAAzgIAEN0BAADRAgAw3gEBANICACHfAQEA0gIAIeABQADTAgAh4QEBANQCACHiAUAA0wIAIeMBQADTAgAhDgsAANkC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_AEAAOoC_AEi_QFAANMCACH-AUAA0wIAIf8BAgDiAgAhgAIBANICACGCAgAA6wKCAiKDAgEA1AIAIYQCAQDUAgAhBwsAANkCACAnAADvAgAgKAAA7wIAIOQBAAAA_AEC5QEAAAD8AQjmAQAAAPwBCO4BAADuAvwBIgcLAADZAgAgJwAA7QIAICgAAO0CACDkAQAAAIICAuUBAAAAggII5gEAAACCAgjuAQAA7AKCAiIHCwAA2QIAICcAAO0CACAoAADtAgAg5AEAAACCAgLlAQAAAIICCOYBAAAAggII7gEAAOwCggIiBOQBAAAAggIC5QEAAACCAgjmAQAAAIICCO4BAADtAoICIgcLAADZAgAgJwAA7wIAICgAAO8CACDkAQAAAPwBAuUBAAAA_AEI5gEAAAD8AQjuAQAA7gL8ASIE5AEAAAD8AQLlAQAAAPwBCOYBAAAA_AEI7gEAAO8C_AEiEtsBAADwAgAw3AEAAIUCABDdAQAA8AIAMN4BAQDSAgAh4gFAANMCACHjAUAA0wIAIfoBAQDSAgAhhQIBANICACGGAgEA0gIAIYcCAQDSAgAhiAIBANQCACGKAgAA8QKKAiOLAkAA8gIAIYwCQADTAgAhjQIBANQCACGOAgEA1AIAIZACAADzApACIpECAQDUAgAhBwsAANYCACAnAAD5AgAgKAAA-QIAIOQBAAAAigID5QEAAACKAgnmAQAAAIoCCe4BAAD4AooCIwsLAADWAgAgJwAA9wIAICgAAPcCACDkAUAAAAAB5QFAAAAABeYBQAAAAAXnAUAAAAAB6AFAAAAAAekBQAAAAAHqAUAAAAAB7gFAAPYCACEHCwAA2QIAICcAAPUCACAoAAD1AgAg5AEAAACQAgLlAQAAAJACCOYBAAAAkAII7gEAAPQCkAIiBwsAANkCACAnAAD1AgAgKAAA9QIAIOQBAAAAkAIC5QEAAACQAgjmAQAAAJACCO4BAAD0ApACIgTkAQAAAJACAuUBAAAAkAII5gEAAACQAgjuAQAA9QKQAiILCwAA1gIAICcAAPcCACAoAAD3AgAg5AFAAAAAAeUBQAAAAAXmAUAAAAAF5wFAAAAAAegBQAAAAAHpAUAAAAAB6gFAAAAAAe4BQAD2AgAhCOQBQAAAAAHlAUAAAAAF5gFAAAAABecBQAAAAAHoAUAAAAAB6QFAAAAAAeoBQAAAAAHuAUAA9wIAIQcLAADWAgAgJwAA-QIAICgAAPkCACDkAQAAAIoCA-UBAAAAigIJ5gEAAACKAgnuAQAA-AKKAiME5AEAAACKAgPlAQAAAIoCCeYBAAAAigIJ7gEAAPkCigIjCNsBAAD6AgAw3AEAAOkBABDdAQAA-gIAMN4BAQDSAgAh3wEBANICACHiAUAA0wIAIeMBQADTAgAhjQIBANICACEJ2wEAAPsCADDcAQAA0wEAEN0BAAD7AgAw3gEBANICACHhAQEA1AIAIeIBQADTAgAh4wFAANMCACHvAQEA0gIAIZICAQDSAgAhCwwAAOgCACAOAAD9AgAg2wEAAPwCADDcAQAAHAAQ3QEAAPwCADDeAQEA3gIAIeEBAQDgAgAh4gFAAN8CACHjAUAA3wIAIe8BAQDeAgAhkgIBAN4CACED9wEAACEAIPgBAAAhACD5AQAAIQAgCdsBAAD-AgAw3AEAALsBABDdAQAA_gIAMN4BAQDSAgAh4gFAANMCACHjAUAA0wIAIZMCAQDSAgAhlAIBANICACGVAkAA0wIAIQnbAQAA_wIAMNwBAACoAQAQ3QEAAP8CADDeAQEA3gIAIeIBQADfAgAh4wFAAN8CACGTAgEA3gIAIZQCAQDeAgAhlQJAAN8CACEQ2wEAAIADADDcAQAAogEAEN0BAACAAwAw3gEBANICACHiAUAA0wIAIeMBQADTAgAhhQIBANICACGWAgEA0gIAIZcCAQDSAgAhmAIBANQCACGZAgEA1AIAIZoCAQDUAgAhmwJAAPICACGcAkAA8gIAIZ0CAQDUAgAhngIBANQCACEL2wEAAIEDADDcAQAAjAEAEN0BAACBAwAw3gEBANICACHiAUAA0wIAIeMBQADTAgAhhQIBANICACGVAkAA0wIAIZ8CAQDSAgAhoAIBANQCACGhAgEA1AIAIRLbAQAAggMAMNwBAAB2ABDdAQAAggMAMN4BAQDSAgAh4gFAANMCACHjAUAA0wIAIe8BAQDSAgAhiAIBANQCACGiAgEA0gIAIaQCAACDA6QCIqUCAQDSAgAhpgIgAIQDACGnAkAA8gIAIagCAQDUAgAhqQIgAIQDACGqAiAAhAMAIasCAQDUAgAhrAJAAPICACEHCwAA2QIAICcAAIgDACAoAACIAwAg5AEAAACkAgLlAQAAAKQCCOYBAAAApAII7gEAAIcDpAIiBQsAANkCACAnAACGAwAgKAAAhgMAIOQBIAAAAAHuASAAhQMAIQULAADZAgAgJwAAhgMAICgAAIYDACDkASAAAAAB7gEgAIUDACEC5AEgAAAAAe4BIACGAwAhBwsAANkCACAnAACIAwAgKAAAiAMAIOQBAAAApAIC5QEAAACkAgjmAQAAAKQCCO4BAACHA6QCIgTkAQAAAKQCAuUBAAAApAII5gEAAACkAgjuAQAAiAOkAiIXBAAAjQMAIAUAAI4DACAGAACPAwAgCQAAkAMAIAoAAJEDACDbAQAAiQMAMNwBAAANABDdAQAAiQMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIe8BAQDeAgAhiAIBAOACACGiAgEA3gIAIaQCAACKA6QCIqUCAQDeAgAhpgIgAIsDACGnAkAAjAMAIagCAQDgAgAhqQIgAIsDACGqAiAAiwMAIasCAQDgAgAhrAJAAIwDACEE5AEAAACkAgLlAQAAAKQCCOYBAAAApAII7gEAAIgDpAIiAuQBIAAAAAHuASAAhgMAIQjkAUAAAAAB5QFAAAAABeYBQAAAAAXnAUAAAAAB6AFAAAAAAekBQAAAAAHqAUAAAAAB7gFAAPcCACED9wEAAAMAIPgBAAADACD5AQAAAwAgGgMAAKYDACANAACnAwAgDwAAqAMAIBAAAKkDACARAACqAwAgEgAAkAMAINsBAACjAwAw3AEAAAcAEN0BAACjAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGFAgEA3gIAIYYCAQDeAgAhhwIBAN4CACGIAgEA4AIAIYoCAACkA4oCI4sCQACMAwAhjAJAAN8CACGNAgEA4AIAIY4CAQDgAgAhkAIAAKUDkAIikQIBAOACACG8AgAABwAgvQIAAAcAIAP3AQAACQAg-AEAAAkAIPkBAAAJACAD9wEAAA8AIPgBAAAPACD5AQAADwAgA_cBAAAUACD4AQAAFAAg-QEAABQAIAnbAQAAkgMAMNwBAABeABDdAQAAkgMAMN4BAQDSAgAh4gFAANMCACGFAgEA1AIAIaACAQDUAgAhrgIAAJMDrgIirwIBANICACEHCwAA2QIAICcAAJUDACAoAACVAwAg5AEAAACuAgLlAQAAAK4CCOYBAAAArgII7gEAAJQDrgIiBwsAANkCACAnAACVAwAgKAAAlQMAIOQBAAAArgIC5QEAAACuAgjmAQAAAK4CCO4BAACUA64CIgTkAQAAAK4CAuUBAAAArgII5gEAAACuAgjuAQAAlQOuAiIS2wEAAJYDADDcAQAARgAQ3QEAAJYDADDeAQEA0gIAIeABQADTAgAh4gFAANMCACHjAUAA0wIAIfoBAQDSAgAhggIAAJcDswIisAJAAPICACGxAkAA8gIAIbMCCACYAwAhtAIIAJgDACG1AgIA4gIAIbYCAgDiAgAhtwIBANQCACG4AgEA1AIAIbkCAQDUAgAhBwsAANkCACAnAACbAwAgKAAAmwMAIOQBAAAAswIC5QEAAACzAgjmAQAAALMCCO4BAACaA7MCIg0LAADZAgAgJQAA5QIAICYAAOUCACAnAADlAgAgKAAA5QIAIOQBCAAAAAHlAQgAAAAE5gEIAAAABOcBCAAAAAHoAQgAAAAB6QEIAAAAAeoBCAAAAAHuAQgAmQMAIQ0LAADZAgAgJQAA5QIAICYAAOUCACAnAADlAgAgKAAA5QIAIOQBCAAAAAHlAQgAAAAE5gEIAAAABOcBCAAAAAHoAQgAAAAB6QEIAAAAAeoBCAAAAAHuAQgAmQMAIQcLAADZAgAgJwAAmwMAICgAAJsDACDkAQAAALMCAuUBAAAAswII5gEAAACzAgjuAQAAmgOzAiIE5AEAAACzAgLlAQAAALMCCOYBAAAAswII7gEAAJsDswIiEwcAAJ8DACDbAQAAnAMAMNwBAAAuABDdAQAAnAMAMN4BAQDeAgAh4AFAAN8CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGCAgAAnQOzAiKwAkAAjAMAIbECQACMAwAhswIIAJ4DACG0AggAngMAIbUCAgDnAgAhtgICAOcCACG3AgEA4AIAIbgCAQDgAgAhuQIBAOACACEE5AEAAACzAgLlAQAAALMCCOYBAAAAswII7gEAAJsDswIiCOQBCAAAAAHlAQgAAAAE5gEIAAAABOcBCAAAAAHoAQgAAAAB6QEIAAAAAeoBCAAAAAHuAQgA5QIAIRoDAACmAwAgDQAApwMAIA8AAKgDACAQAACpAwAgEQAAqgMAIBIAAJADACDbAQAAowMAMNwBAAAHABDdAQAAowMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAhhQIBAN4CACGGAgEA3gIAIYcCAQDeAgAhiAIBAOACACGKAgAApAOKAiOLAkAAjAMAIYwCQADfAgAhjQIBAOACACGOAgEA4AIAIZACAAClA5ACIpECAQDgAgAhvAIAAAcAIL0CAAAHACAC3wEBAAAAAY0CAQAAAAEKDAAA6AIAIA0AAKIDACDbAQAAoQMAMNwBAAAhABDdAQAAoQMAMN4BAQDeAgAh3wEBAN4CACHiAUAA3wIAIeMBQADfAgAhjQIBAN4CACENDAAA6AIAIA4AAP0CACDbAQAA_AIAMNwBAAAcABDdAQAA_AIAMN4BAQDeAgAh4QEBAOACACHiAUAA3wIAIeMBQADfAgAh7wEBAN4CACGSAgEA3gIAIbwCAAAcACC9AgAAHAAgGAMAAKYDACANAACnAwAgDwAAqAMAIBAAAKkDACARAACqAwAgEgAAkAMAINsBAACjAwAw3AEAAAcAEN0BAACjAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGFAgEA3gIAIYYCAQDeAgAhhwIBAN4CACGIAgEA4AIAIYoCAACkA4oCI4sCQACMAwAhjAJAAN8CACGNAgEA4AIAIY4CAQDgAgAhkAIAAKUDkAIikQIBAOACACEE5AEAAACKAgPlAQAAAIoCCeYBAAAAigIJ7gEAAPkCigIjBOQBAAAAkAIC5QEAAACQAgjmAQAAAJACCO4BAAD1ApACIhkEAACNAwAgBQAAjgMAIAYAAI8DACAJAACQAwAgCgAAkQMAINsBAACJAwAw3AEAAA0AEN0BAACJAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh7wEBAN4CACGIAgEA4AIAIaICAQDeAgAhpAIAAIoDpAIipQIBAN4CACGmAiAAiwMAIacCQACMAwAhqAIBAOACACGpAiAAiwMAIaoCIACLAwAhqwIBAOACACGsAkAAjAMAIbwCAAANACC9AgAADQAgDQwAAOgCACAOAAD9AgAg2wEAAPwCADDcAQAAHAAQ3QEAAPwCADDeAQEA3gIAIeEBAQDgAgAh4gFAAN8CACHjAUAA3wIAIe8BAQDeAgAhkgIBAN4CACG8AgAAHAAgvQIAABwAIAwMAADoAgAgDQAAogMAINsBAAChAwAw3AEAACEAEN0BAAChAwAw3gEBAN4CACHfAQEA3gIAIeIBQADfAgAh4wFAAN8CACGNAgEA3gIAIbwCAAAhACC9AgAAIQAgDgwAAOgCACDbAQAA5gIAMNwBAAAqABDdAQAA5gIAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIe8BAQDeAgAh8AEBAN4CACHxAQEA3gIAIfIBAgDnAgAh8wEAAOMCACC8AgAAKgAgvQIAACoAIAP3AQAALgAg-AEAAC4AIPkBAAAuACARAwAApgMAINsBAACrAwAw3AEAABQAEN0BAACrAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAhhQIBAN4CACGWAgEA3gIAIZcCAQDeAgAhmAIBAOACACGZAgEA4AIAIZoCAQDgAgAhmwJAAIwDACGcAkAAjAMAIZ0CAQDgAgAhngIBAOACACERBwAAnwMAIAgAAK8DACDbAQAArAMAMNwBAAAPABDdAQAArAMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAh_AEAAK0D_AEi_QFAAN8CACH-AUAA3wIAIf8BAgDnAgAhgAIBAN4CACGCAgAArgOCAiKDAgEA4AIAIYQCAQDgAgAhBOQBAAAA_AEC5QEAAAD8AQjmAQAAAPwBCO4BAADvAvwBIgTkAQAAAIICAuUBAAAAggII5gEAAACCAgjuAQAA7QKCAiIZBAAAjQMAIAUAAI4DACAGAACPAwAgCQAAkAMAIAoAAJEDACDbAQAAiQMAMNwBAAANABDdAQAAiQMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIe8BAQDeAgAhiAIBAOACACGiAgEA3gIAIaQCAACKA6QCIqUCAQDeAgAhpgIgAIsDACGnAkAAjAMAIagCAQDgAgAhqQIgAIsDACGqAiAAiwMAIasCAQDgAgAhrAJAAIwDACG8AgAADQAgvQIAAA0AIAoDAACvAwAg2wEAALADADDcAQAACQAQ3QEAALADADDeAQEA3gIAIeIBQADfAgAhhQIBAOACACGgAgEA4AIAIa4CAACxA64CIq8CAQDeAgAhBOQBAAAArgIC5QEAAACuAgjmAQAAAK4CCO4BAACVA64CIgwDAACmAwAg2wEAALIDADDcAQAAAwAQ3QEAALIDADDeAQEA3gIAIeIBQADfAgAh4wFAAN8CACGFAgEA3gIAIZUCQADfAgAhnwIBAN4CACGgAgEA4AIAIaECAQDgAgAhAuABQAAAAAH6AQEAAAABAAAAAAHBAgEAAAABAcECQAAAAAEBwQIBAAAAAQAAAAAABcECAgAAAAHHAgIAAAAByAICAAAAAckCAgAAAAHKAgIAAAABAsECAgAAAATLAgIAAAAFCx8AAMMDADAgAADIAwAwvgIAAMQDADC_AgAAxQMAMMACAADGAwAgwQIAAMcDADDCAgAAxwMAMMMCAADHAwAwxAIAAMcDADDFAgAAyQMAMMYCAADKAwAwEwMAAPUDACANAAD2AwAgDwAA9wMAIBEAAPgDACASAAD5AwAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB-gEBAAAAAYUCAQAAAAGGAgEAAAABhwIBAAAAAYgCAQAAAAGKAgAAAIoCA4sCQAAAAAGMAkAAAAABjQIBAAAAAY4CAQAAAAGQAgAAAJACAgIAAAAfACAfAAD0AwAgAwAAAB8AIB8AAPQDACAgAADQAwAgARgAANsFADAYAwAApgMAIA0AAKcDACAPAACoAwAgEAAAqQMAIBEAAKoDACASAACQAwAg2wEAAKMDADDcAQAABwAQ3QEAAKMDADDeAQEAAAAB4gFAAN8CACHjAUAA3wIAIfoBAQAAAAGFAgEAAAABhgIBAN4CACGHAgEA3gIAIYgCAQDgAgAhigIAAKQDigIjiwJAAIwDACGMAkAA3wIAIY0CAQDgAgAhjgIBAOACACGQAgAApQOQAiKRAgEA4AIAIQIAAAAfACAYAADQAwAgAgAAAMsDACAYAADMAwAgEtsBAADKAwAw3AEAAMsDABDdAQAAygMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAhhQIBAN4CACGGAgEA3gIAIYcCAQDeAgAhiAIBAOACACGKAgAApAOKAiOLAkAAjAMAIYwCQADfAgAhjQIBAOACACGOAgEA4AIAIZACAAClA5ACIpECAQDgAgAhEtsBAADKAwAw3AEAAMsDABDdAQAAygMAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAhhQIBAN4CACGGAgEA3gIAIYcCAQDeAgAhiAIBAOACACGKAgAApAOKAiOLAkAAjAMAIYwCQADfAgAhjQIBAOACACGOAgEA4AIAIZACAAClA5ACIpECAQDgAgAhDt4BAQC4AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhhQIBALgDACGGAgEAuAMAIYcCAQC4AwAhiAIBALoDACGKAgAAzQOKAiOLAkAAzgMAIYwCQAC5AwAhjQIBALoDACGOAgEAugMAIZACAADPA5ACIgHBAgAAAIoCAwHBAkAAAAABAcECAAAAkAICEwMAANEDACANAADSAwAgDwAA0wMAIBEAANQDACASAADVAwAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh-gEBALgDACGFAgEAuAMAIYYCAQC4AwAhhwIBALgDACGIAgEAugMAIYoCAADNA4oCI4sCQADOAwAhjAJAALkDACGNAgEAugMAIY4CAQC6AwAhkAIAAM8DkAIiBR8AAMkFACAgAADZBQAgvgIAAMoFACC_AgAA2AUAIMQCAABhACAHHwAAxwUAICAAANYFACC-AgAAyAUAIL8CAADVBQAgwgIAABwAIMMCAAAcACDEAgAAvgEAIAcfAADFBQAgIAAA0wUAIL4CAADGBQAgvwIAANIFACDCAgAAIQAgwwIAACEAIMQCAAAjACALHwAA5gMAMCAAAOsDADC-AgAA5wMAML8CAADoAwAwwAIAAOkDACDBAgAA6gMAMMICAADqAwAwwwIAAOoDADDEAgAA6gMAMMUCAADsAwAwxgIAAO0DADALHwAA1gMAMCAAANsDADC-AgAA1wMAML8CAADYAwAwwAIAANkDACDBAgAA2gMAMMICAADaAwAwwwIAANoDADDEAgAA2gMAMMUCAADcAwAwxgIAAN0DADAMCAAA5QMAIN4BAQAAAAHiAUAAAAAB4wFAAAAAAfwBAAAA_AEC_QFAAAAAAf4BQAAAAAH_AQIAAAABgAIBAAAAAYICAAAAggICgwIBAAAAAYQCAQAAAAECAAAAEQAgHwAA5AMAIAMAAAARACAfAADkAwAgIAAA4gMAIAEYAADRBQAwEQcAAJ8DACAIAACvAwAg2wEAAKwDADDcAQAADwAQ3QEAAKwDADDeAQEAAAAB4gFAAN8CACHjAUAA3wIAIfoBAQDeAgAh_AEAAK0D_AEi_QFAAN8CACH-AUAA3wIAIf8BAgDnAgAhgAIBAN4CACGCAgAArgOCAiKDAgEA4AIAIYQCAQDgAgAhAgAAABEAIBgAAOIDACACAAAA3gMAIBgAAN8DACAP2wEAAN0DADDcAQAA3gMAEN0BAADdAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACH8AQAArQP8ASL9AUAA3wIAIf4BQADfAgAh_wECAOcCACGAAgEA3gIAIYICAACuA4ICIoMCAQDgAgAhhAIBAOACACEP2wEAAN0DADDcAQAA3gMAEN0BAADdAwAw3gEBAN4CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACH8AQAArQP8ASL9AUAA3wIAIf4BQADfAgAh_wECAOcCACGAAgEA3gIAIYICAACuA4ICIoMCAQDgAgAhhAIBAOACACEL3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh_AEAAOAD_AEi_QFAALkDACH-AUAAuQMAIf8BAgDAAwAhgAIBALgDACGCAgAA4QOCAiKDAgEAugMAIYQCAQC6AwAhAcECAAAA_AECAcECAAAAggICDAgAAOMDACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH8AQAA4AP8ASL9AUAAuQMAIf4BQAC5AwAh_wECAMADACGAAgEAuAMAIYICAADhA4ICIoMCAQC6AwAhhAIBALoDACEHHwAAzAUAICAAAM8FACC-AgAAzQUAIL8CAADOBQAgwgIAAA0AIMMCAAANACDEAgAAYQAgDAgAAOUDACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH8AQAAAPwBAv0BQAAAAAH-AUAAAAAB_wECAAAAAYACAQAAAAGCAgAAAIICAoMCAQAAAAGEAgEAAAABAx8AAMwFACC-AgAAzQUAIMQCAABhACAO3gEBAAAAAeABQAAAAAHiAUAAAAAB4wFAAAAAAYICAAAAswICsAJAAAAAAbECQAAAAAGzAggAAAABtAIIAAAAAbUCAgAAAAG2AgIAAAABtwIBAAAAAbgCAQAAAAG5AgEAAAABAgAAAAEAIB8AAPMDACADAAAAAQAgHwAA8wMAICAAAPIDACABGAAAywUAMBQHAACfAwAg2wEAAJwDADDcAQAALgAQ3QEAAJwDADDeAQEAAAAB4AFAAN8CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGCAgAAnQOzAiKwAkAAjAMAIbECQACMAwAhswIIAJ4DACG0AggAngMAIbUCAgDnAgAhtgICAOcCACG3AgEA4AIAIbgCAQDgAgAhuQIBAOACACG7AgAAswMAIAIAAAABACAYAADyAwAgAgAAAO4DACAYAADvAwAgEtsBAADtAwAw3AEAAO4DABDdAQAA7QMAMN4BAQDeAgAh4AFAAN8CACHiAUAA3wIAIeMBQADfAgAh-gEBAN4CACGCAgAAnQOzAiKwAkAAjAMAIbECQACMAwAhswIIAJ4DACG0AggAngMAIbUCAgDnAgAhtgICAOcCACG3AgEA4AIAIbgCAQDgAgAhuQIBAOACACES2wEAAO0DADDcAQAA7gMAEN0BAADtAwAw3gEBAN4CACHgAUAA3wIAIeIBQADfAgAh4wFAAN8CACH6AQEA3gIAIYICAACdA7MCIrACQACMAwAhsQJAAIwDACGzAggAngMAIbQCCACeAwAhtQICAOcCACG2AgIA5wIAIbcCAQDgAgAhuAIBAOACACG5AgEA4AIAIQ7eAQEAuAMAIeABQAC5AwAh4gFAALkDACHjAUAAuQMAIYICAADwA7MCIrACQADOAwAhsQJAAM4DACGzAggA8QMAIbQCCADxAwAhtQICAMADACG2AgIAwAMAIbcCAQC6AwAhuAIBALoDACG5AgEAugMAIQHBAgAAALMCAgXBAggAAAABxwIIAAAAAcgCCAAAAAHJAggAAAABygIIAAAAAQ7eAQEAuAMAIeABQAC5AwAh4gFAALkDACHjAUAAuQMAIYICAADwA7MCIrACQADOAwAhsQJAAM4DACGzAggA8QMAIbQCCADxAwAhtQICAMADACG2AgIAwAMAIbcCAQC6AwAhuAIBALoDACG5AgEAugMAIQ7eAQEAAAAB4AFAAAAAAeIBQAAAAAHjAUAAAAABggIAAACzAgKwAkAAAAABsQJAAAAAAbMCCAAAAAG0AggAAAABtQICAAAAAbYCAgAAAAG3AgEAAAABuAIBAAAAAbkCAQAAAAETAwAA9QMAIA0AAPYDACAPAAD3AwAgEQAA-AMAIBIAAPkDACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAABhQIBAAAAAYYCAQAAAAGHAgEAAAABiAIBAAAAAYoCAAAAigIDiwJAAAAAAYwCQAAAAAGNAgEAAAABjgIBAAAAAZACAAAAkAICAx8AAMkFACC-AgAAygUAIMQCAABhACADHwAAxwUAIL4CAADIBQAgxAIAAL4BACADHwAAxQUAIL4CAADGBQAgxAIAACMAIAQfAADmAwAwvgIAAOcDADDAAgAA6QMAIMQCAADqAwAwBB8AANYDADC-AgAA1wMAMMACAADZAwAgxAIAANoDADABwQICAAAABAQfAADDAwAwvgIAAMQDADDAAgAAxgMAIMQCAADHAwAwAAAAAAAABR8AAMAFACAgAADDBQAgvgIAAMEFACC_AgAAwgUAIMQCAAAfACADHwAAwAUAIL4CAADBBQAgxAIAAB8AIAAAAAcfAAC7BQAgIAAAvgUAIL4CAAC8BQAgvwIAAL0FACDCAgAAKgAgwwIAACoAIMQCAACgAgAgAx8AALsFACC-AgAAvAUAIMQCAACgAgAgAAAABR8AALUFACAgAAC5BQAgvgIAALYFACC_AgAAuAUAIMQCAAC-AQAgCx8AAI4EADAgAACSBAAwvgIAAI8EADC_AgAAkAQAMMACAACRBAAgwQIAAMcDADDCAgAAxwMAMMMCAADHAwAwxAIAAMcDADDFAgAAkwQAMMYCAADKAwAwEwMAAPUDACANAAD2AwAgEAAAiAQAIBEAAPgDACASAAD5AwAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB-gEBAAAAAYUCAQAAAAGGAgEAAAABhwIBAAAAAYgCAQAAAAGKAgAAAIoCA4sCQAAAAAGMAkAAAAABjQIBAAAAAZACAAAAkAICkQIBAAAAAQIAAAAfACAfAACWBAAgAwAAAB8AIB8AAJYEACAgAACVBAAgARgAALcFADACAAAAHwAgGAAAlQQAIAIAAADLAwAgGAAAlAQAIA7eAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIYUCAQC4AwAhhgIBALgDACGHAgEAuAMAIYgCAQC6AwAhigIAAM0DigIjiwJAAM4DACGMAkAAuQMAIY0CAQC6AwAhkAIAAM8DkAIikQIBALoDACETAwAA0QMAIA0AANIDACAQAACHBAAgEQAA1AMAIBIAANUDACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIYUCAQC4AwAhhgIBALgDACGHAgEAuAMAIYgCAQC6AwAhigIAAM0DigIjiwJAAM4DACGMAkAAuQMAIY0CAQC6AwAhkAIAAM8DkAIikQIBALoDACETAwAA9QMAIA0AAPYDACAQAACIBAAgEQAA-AMAIBIAAPkDACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAABhQIBAAAAAYYCAQAAAAGHAgEAAAABiAIBAAAAAYoCAAAAigIDiwJAAAAAAYwCQAAAAAGNAgEAAAABkAIAAACQAgKRAgEAAAABAx8AALUFACC-AgAAtgUAIMQCAAC-AQAgBB8AAI4EADC-AgAAjwQAMMACAACRBAAgxAIAAMcDADAAAAALHwAAqgQAMCAAAK4EADC-AgAAqwQAML8CAACsBAAwwAIAAK0EACDBAgAAxwMAMMICAADHAwAwwwIAAMcDADDEAgAAxwMAMMUCAACvBAAwxgIAAMoDADALHwAAngQAMCAAAKMEADC-AgAAnwQAML8CAACgBAAwwAIAAKEEACDBAgAAogQAMMICAACiBAAwwwIAAKIEADDEAgAAogQAMMUCAACkBAAwxgIAAKUEADAFDAAAmAQAIN4BAQAAAAHfAQEAAAAB4gFAAAAAAeMBQAAAAAECAAAAIwAgHwAAqQQAIAMAAAAjACAfAACpBAAgIAAAqAQAIAEYAAC0BQAwCwwAAOgCACANAACiAwAg2wEAAKEDADDcAQAAIQAQ3QEAAKEDADDeAQEAAAAB3wEBAN4CACHiAUAA3wIAIeMBQADfAgAhjQIBAN4CACG6AgAAoAMAIAIAAAAjACAYAACoBAAgAgAAAKYEACAYAACnBAAgCNsBAAClBAAw3AEAAKYEABDdAQAApQQAMN4BAQDeAgAh3wEBAN4CACHiAUAA3wIAIeMBQADfAgAhjQIBAN4CACEI2wEAAKUEADDcAQAApgQAEN0BAAClBAAw3gEBAN4CACHfAQEA3gIAIeIBQADfAgAh4wFAAN8CACGNAgEA3gIAIQTeAQEAuAMAId8BAQC4AwAh4gFAALkDACHjAUAAuQMAIQUMAACNBAAg3gEBALgDACHfAQEAuAMAIeIBQAC5AwAh4wFAALkDACEFDAAAmAQAIN4BAQAAAAHfAQEAAAAB4gFAAAAAAeMBQAAAAAETAwAA9QMAIA8AAPcDACAQAACIBAAgEQAA-AMAIBIAAPkDACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAABhQIBAAAAAYYCAQAAAAGHAgEAAAABiAIBAAAAAYoCAAAAigIDiwJAAAAAAYwCQAAAAAGOAgEAAAABkAIAAACQAgKRAgEAAAABAgAAAB8AIB8AALIEACADAAAAHwAgHwAAsgQAICAAALEEACABGAAAswUAMAIAAAAfACAYAACxBAAgAgAAAMsDACAYAACwBAAgDt4BAQC4AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhhQIBALgDACGGAgEAuAMAIYcCAQC4AwAhiAIBALoDACGKAgAAzQOKAiOLAkAAzgMAIYwCQAC5AwAhjgIBALoDACGQAgAAzwOQAiKRAgEAugMAIRMDAADRAwAgDwAA0wMAIBAAAIcEACARAADUAwAgEgAA1QMAIN4BAQC4AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhhQIBALgDACGGAgEAuAMAIYcCAQC4AwAhiAIBALoDACGKAgAAzQOKAiOLAkAAzgMAIYwCQAC5AwAhjgIBALoDACGQAgAAzwOQAiKRAgEAugMAIRMDAAD1AwAgDwAA9wMAIBAAAIgEACARAAD4AwAgEgAA-QMAIN4BAQAAAAHiAUAAAAAB4wFAAAAAAfoBAQAAAAGFAgEAAAABhgIBAAAAAYcCAQAAAAGIAgEAAAABigIAAACKAgOLAkAAAAABjAJAAAAAAY4CAQAAAAGQAgAAAJACApECAQAAAAEEHwAAqgQAML4CAACrBAAwwAIAAK0EACDEAgAAxwMAMAQfAACeBAAwvgIAAJ8EADDAAgAAoQQAIMQCAACiBAAwAAAAAAAAAAUfAACuBQAgIAAAsQUAIL4CAACvBQAgvwIAALAFACDEAgAAYQAgAx8AAK4FACC-AgAArwUAIMQCAABhACAAAAAFHwAAqQUAICAAAKwFACC-AgAAqgUAIL8CAACrBQAgxAIAAGEAIAMfAACpBQAgvgIAAKoFACDEAgAAYQAgAAAAAcECAAAApAICAcECIAAAAAELHwAA9AQAMCAAAPkEADC-AgAA9QQAML8CAAD2BAAwwAIAAPcEACDBAgAA-AQAMMICAAD4BAAwwwIAAPgEADDEAgAA-AQAMMUCAAD6BAAwxgIAAPsEADAHHwAA7wQAICAAAPIEACC-AgAA8AQAIL8CAADxBAAgwgIAAAcAIMMCAAAHACDEAgAAHwAgCx8AAOIEADAgAADnBAAwvgIAAOMEADC_AgAA5AQAMMACAADlBAAgwQIAAOYEADDCAgAA5gQAMMMCAADmBAAwxAIAAOYEADDFAgAA6AQAMMYCAADpBAAwCx8AANkEADAgAADdBAAwvgIAANoEADC_AgAA2wQAMMACAADcBAAgwQIAANoDADDCAgAA2gMAMMMCAADaAwAwxAIAANoDADDFAgAA3gQAMMYCAADdAwAwCx8AAM0EADAgAADSBAAwvgIAAM4EADC_AgAAzwQAMMACAADQBAAgwQIAANEEADDCAgAA0QQAMMMCAADRBAAwxAIAANEEADDFAgAA0wQAMMYCAADUBAAwDN4BAQAAAAHiAUAAAAAB4wFAAAAAAZYCAQAAAAGXAgEAAAABmAIBAAAAAZkCAQAAAAGaAgEAAAABmwJAAAAAAZwCQAAAAAGdAgEAAAABngIBAAAAAQIAAAAWACAfAADYBAAgAwAAABYAIB8AANgEACAgAADXBAAgARgAAKgFADARAwAApgMAINsBAACrAwAw3AEAABQAEN0BAACrAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACGFAgEA3gIAIZYCAQDeAgAhlwIBAN4CACGYAgEA4AIAIZkCAQDgAgAhmgIBAOACACGbAkAAjAMAIZwCQACMAwAhnQIBAOACACGeAgEA4AIAIQIAAAAWACAYAADXBAAgAgAAANUEACAYAADWBAAgENsBAADUBAAw3AEAANUEABDdAQAA1AQAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlgIBAN4CACGXAgEA3gIAIZgCAQDgAgAhmQIBAOACACGaAgEA4AIAIZsCQACMAwAhnAJAAIwDACGdAgEA4AIAIZ4CAQDgAgAhENsBAADUBAAw3AEAANUEABDdAQAA1AQAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlgIBAN4CACGXAgEA3gIAIZgCAQDgAgAhmQIBAOACACGaAgEA4AIAIZsCQACMAwAhnAJAAIwDACGdAgEA4AIAIZ4CAQDgAgAhDN4BAQC4AwAh4gFAALkDACHjAUAAuQMAIZYCAQC4AwAhlwIBALgDACGYAgEAugMAIZkCAQC6AwAhmgIBALoDACGbAkAAzgMAIZwCQADOAwAhnQIBALoDACGeAgEAugMAIQzeAQEAuAMAIeIBQAC5AwAh4wFAALkDACGWAgEAuAMAIZcCAQC4AwAhmAIBALoDACGZAgEAugMAIZoCAQC6AwAhmwJAAM4DACGcAkAAzgMAIZ0CAQC6AwAhngIBALoDACEM3gEBAAAAAeIBQAAAAAHjAUAAAAABlgIBAAAAAZcCAQAAAAGYAgEAAAABmQIBAAAAAZoCAQAAAAGbAkAAAAABnAJAAAAAAZ0CAQAAAAGeAgEAAAABDAcAAIMEACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAAB_AEAAAD8AQL9AUAAAAAB_gFAAAAAAf8BAgAAAAGAAgEAAAABggIAAACCAgKEAgEAAAABAgAAABEAIB8AAOEEACADAAAAEQAgHwAA4QQAICAAAOAEACABGAAApwUAMAIAAAARACAYAADgBAAgAgAAAN4DACAYAADfBAAgC94BAQC4AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAh_AEAAOAD_AEi_QFAALkDACH-AUAAuQMAIf8BAgDAAwAhgAIBALgDACGCAgAA4QOCAiKEAgEAugMAIQwHAACCBAAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh-gEBALgDACH8AQAA4AP8ASL9AUAAuQMAIf4BQAC5AwAh_wECAMADACGAAgEAuAMAIYICAADhA4ICIoQCAQC6AwAhDAcAAIMEACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAAB_AEAAAD8AQL9AUAAAAAB_gFAAAAAAf8BAgAAAAGAAgEAAAABggIAAACCAgKEAgEAAAABBd4BAQAAAAHiAUAAAAABoAIBAAAAAa4CAAAArgICrwIBAAAAAQIAAAALACAfAADuBAAgAwAAAAsAIB8AAO4EACAgAADtBAAgARgAAKYFADAKAwAArwMAINsBAACwAwAw3AEAAAkAEN0BAACwAwAw3gEBAAAAAeIBQADfAgAhhQIBAOACACGgAgEA4AIAIa4CAACxA64CIq8CAQDeAgAhAgAAAAsAIBgAAO0EACACAAAA6gQAIBgAAOsEACAJ2wEAAOkEADDcAQAA6gQAEN0BAADpBAAw3gEBAN4CACHiAUAA3wIAIYUCAQDgAgAhoAIBAOACACGuAgAAsQOuAiKvAgEA3gIAIQnbAQAA6QQAMNwBAADqBAAQ3QEAAOkEADDeAQEA3gIAIeIBQADfAgAhhQIBAOACACGgAgEA4AIAIa4CAACxA64CIq8CAQDeAgAhBd4BAQC4AwAh4gFAALkDACGgAgEAugMAIa4CAADsBK4CIq8CAQC4AwAhAcECAAAArgICBd4BAQC4AwAh4gFAALkDACGgAgEAugMAIa4CAADsBK4CIq8CAQC4AwAhBd4BAQAAAAHiAUAAAAABoAIBAAAAAa4CAAAArgICrwIBAAAAARMNAAD2AwAgDwAA9wMAIBAAAIgEACARAAD4AwAgEgAA-QMAIN4BAQAAAAHiAUAAAAAB4wFAAAAAAfoBAQAAAAGGAgEAAAABhwIBAAAAAYgCAQAAAAGKAgAAAIoCA4sCQAAAAAGMAkAAAAABjQIBAAAAAY4CAQAAAAGQAgAAAJACApECAQAAAAECAAAAHwAgHwAA7wQAIAMAAAAHACAfAADvBAAgIAAA8wQAIBUAAAAHACANAADSAwAgDwAA0wMAIBAAAIcEACARAADUAwAgEgAA1QMAIBgAAPMEACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIYYCAQC4AwAhhwIBALgDACGIAgEAugMAIYoCAADNA4oCI4sCQADOAwAhjAJAALkDACGNAgEAugMAIY4CAQC6AwAhkAIAAM8DkAIikQIBALoDACETDQAA0gMAIA8AANMDACAQAACHBAAgEQAA1AMAIBIAANUDACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIYYCAQC4AwAhhwIBALgDACGIAgEAugMAIYoCAADNA4oCI4sCQADOAwAhjAJAALkDACGNAgEAugMAIY4CAQC6AwAhkAIAAM8DkAIikQIBALoDACEH3gEBAAAAAeIBQAAAAAHjAUAAAAABlQJAAAAAAZ8CAQAAAAGgAgEAAAABoQIBAAAAAQIAAAAFACAfAAD_BAAgAwAAAAUAIB8AAP8EACAgAAD-BAAgARgAAKUFADAMAwAApgMAINsBAACyAwAw3AEAAAMAEN0BAACyAwAw3gEBAAAAAeIBQADfAgAh4wFAAN8CACGFAgEA3gIAIZUCQADfAgAhnwIBAAAAAaACAQDgAgAhoQIBAOACACECAAAABQAgGAAA_gQAIAIAAAD8BAAgGAAA_QQAIAvbAQAA-wQAMNwBAAD8BAAQ3QEAAPsEADDeAQEA3gIAIeIBQADfAgAh4wFAAN8CACGFAgEA3gIAIZUCQADfAgAhnwIBAN4CACGgAgEA4AIAIaECAQDgAgAhC9sBAAD7BAAw3AEAAPwEABDdAQAA-wQAMN4BAQDeAgAh4gFAAN8CACHjAUAA3wIAIYUCAQDeAgAhlQJAAN8CACGfAgEA3gIAIaACAQDgAgAhoQIBAOACACEH3gEBALgDACHiAUAAuQMAIeMBQAC5AwAhlQJAALkDACGfAgEAuAMAIaACAQC6AwAhoQIBALoDACEH3gEBALgDACHiAUAAuQMAIeMBQAC5AwAhlQJAALkDACGfAgEAuAMAIaACAQC6AwAhoQIBALoDACEH3gEBAAAAAeIBQAAAAAHjAUAAAAABlQJAAAAAAZ8CAQAAAAGgAgEAAAABoQIBAAAAAQQfAAD0BAAwvgIAAPUEADDAAgAA9wQAIMQCAAD4BAAwAx8AAO8EACC-AgAA8AQAIMQCAAAfACAEHwAA4gQAML4CAADjBAAwwAIAAOUEACDEAgAA5gQAMAQfAADZBAAwvgIAANoEADDAAgAA3AQAIMQCAADaAwAwBB8AAM0EADC-AgAAzgQAMMACAADQBAAgxAIAANEEADAADAMAAJcFACANAACWBQAgDwAAmAUAIBAAAJkFACARAACaBQAgEgAAiAUAIIgCAAC0AwAgigIAALQDACCLAgAAtAMAII0CAAC0AwAgjgIAALQDACCRAgAAtAMAIAAAAAAAAAcfAACgBQAgIAAAowUAIL4CAAChBQAgvwIAAKIFACDCAgAADQAgwwIAAA0AIMQCAABhACADHwAAoAUAIL4CAAChBQAgxAIAAGEAIAAAAAAABR8AAJsFACAgAACeBQAgvgIAAJwFACC_AgAAnQUAIMQCAAAfACADHwAAmwUAIL4CAACcBQAgxAIAAB8AIAMMAAD8AwAgDgAAtQQAIOEBAAC0AwAgCgQAAIUFACAFAACGBQAgBgAAhwUAIAkAAIgFACAKAACJBQAgiAIAALQDACCnAgAAtAMAIKgCAAC0AwAgqwIAALQDACCsAgAAtAMAIAIMAAD8AwAgDQAAlgUAIAEMAAD8AwAgABQDAAD1AwAgDQAA9gMAIA8AAPcDACAQAACIBAAgEgAA-QMAIN4BAQAAAAHiAUAAAAAB4wFAAAAAAfoBAQAAAAGFAgEAAAABhgIBAAAAAYcCAQAAAAGIAgEAAAABigIAAACKAgOLAkAAAAABjAJAAAAAAY0CAQAAAAGOAgEAAAABkAIAAACQAgKRAgEAAAABAgAAAB8AIB8AAJsFACADAAAABwAgHwAAmwUAICAAAJ8FACAWAAAABwAgAwAA0QMAIA0AANIDACAPAADTAwAgEAAAhwQAIBIAANUDACAYAACfBQAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh-gEBALgDACGFAgEAuAMAIYYCAQC4AwAhhwIBALgDACGIAgEAugMAIYoCAADNA4oCI4sCQADOAwAhjAJAALkDACGNAgEAugMAIY4CAQC6AwAhkAIAAM8DkAIikQIBALoDACEUAwAA0QMAIA0AANIDACAPAADTAwAgEAAAhwQAIBIAANUDACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACH6AQEAuAMAIYUCAQC4AwAhhgIBALgDACGHAgEAuAMAIYgCAQC6AwAhigIAAM0DigIjiwJAAM4DACGMAkAAuQMAIY0CAQC6AwAhjgIBALoDACGQAgAAzwOQAiKRAgEAugMAIRMEAACABQAgBQAAgQUAIAkAAIMFACAKAACEBQAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB7wEBAAAAAYgCAQAAAAGiAgEAAAABpAIAAACkAgKlAgEAAAABpgIgAAAAAacCQAAAAAGoAgEAAAABqQIgAAAAAaoCIAAAAAGrAgEAAAABrAJAAAAAAQIAAABhACAfAACgBQAgAwAAAA0AIB8AAKAFACAgAACkBQAgFQAAAA0AIAQAAMgEACAFAADJBAAgCQAAywQAIAoAAMwEACAYAACkBQAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIRMEAADIBAAgBQAAyQQAIAkAAMsEACAKAADMBAAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIQfeAQEAAAAB4gFAAAAAAeMBQAAAAAGVAkAAAAABnwIBAAAAAaACAQAAAAGhAgEAAAABBd4BAQAAAAHiAUAAAAABoAIBAAAAAa4CAAAArgICrwIBAAAAAQveAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAAB_AEAAAD8AQL9AUAAAAAB_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_BQAgCgAAACoAIBgAAL8FACDeAQEAuAMAIeIBQAC5AwAh4wFAALkDACHvAQEAuAMAIfABAQC4AwAh8QEBALgDACHyAQIAwAMAIfMBAADBAwAgCN4BAQC4AwAh4gFAALkDACHjAUAAuQMAIe8BAQC4AwAh8AEBALgDACHxAQEAuAMAIfIBAgDAAwAh8wEAAMEDACAUAwAA9QMAIA0AAPYDACAPAAD3AwAgEAAAiAQAIBEAAPgDACDeAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAABhQIBAAAAAYYCAQAAAAGHAgEAAAABiAIBAAAAAYoCAAAAigIDiwJAAAAAAYwCQAAAAAGNAgEAAAABjgIBAAAAAZACAAAAkAICkQIBAAAAAQIAAAAfACAfAADABQAgAwAAAAcAIB8AAMAFACAgAADEBQAgFgAAAAcAIAMAANEDACANAADSAwAgDwAA0wMAIBAAAIcEACARAADUAwAgGAAAxAUAIN4BAQC4AwAh4gFAALkDACHjAUAAuQMAIfoBAQC4AwAhhQIBALgDACGGAgEAuAMAIYcCAQC4AwAhiAIBALoDACGKAgAAzQOKAiOLAkAAzgMAIYwCQAC5AwAhjQIBALoDACGOAgEAugMAIZACAADPA5ACIpECAQC6AwAhFAMAANEDACANAADSAwAgDwAA0wMAIBAAAIcEACARAADUAwAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh-gEBALgDACGFAgEAuAMAIYYCAQC4AwAhhwIBALgDACGIAgEAugMAIYoCAADNA4oCI4sCQADOAwAhjAJAALkDACGNAgEAugMAIY4CAQC6AwAhkAIAAM8DkAIikQIBALoDACEGDQAAlwQAIN4BAQAAAAHfAQEAAAAB4gFAAAAAAeMBQAAAAAGNAgEAAAABAgAAACMAIB8AAMUFACAHDgAAtAQAIN4BAQAAAAHhAQEAAAAB4gFAAAAAAeMBQAAAAAHvAQEAAAABkgIBAAAAAQIAAAC-AQAgHwAAxwUAIBMEAACABQAgBgAAggUAIAkAAIMFACAKAACEBQAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB7wEBAAAAAYgCAQAAAAGiAgEAAAABpAIAAACkAgKlAgEAAAABpgIgAAAAAacCQAAAAAGoAgEAAAABqQIgAAAAAaoCIAAAAAGrAgEAAAABrAJAAAAAAQIAAABhACAfAADJBQAgDt4BAQAAAAHgAUAAAAAB4gFAAAAAAeMBQAAAAAGCAgAAALMCArACQAAAAAGxAkAAAAABswIIAAAAAbQCCAAAAAG1AgIAAAABtgICAAAAAbcCAQAAAAG4AgEAAAABuQIBAAAAARMEAACABQAgBQAAgQUAIAYAAIIFACAKAACEBQAg3gEBAAAAAeIBQAAAAAHjAUAAAAAB7wEBAAAAAYgCAQAAAAGiAgEAAAABpAIAAACkAgKlAgEAAAABpgIgAAAAAacCQAAAAAGoAgEAAAABqQIgAAAAAaoCIAAAAAGrAgEAAAABrAJAAAAAAQIAAABhACAfAADMBQAgAwAAAA0AIB8AAMwFACAgAADQBQAgFQAAAA0AIAQAAMgEACAFAADJBAAgBgAAygQAIAoAAMwEACAYAADQBQAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIRMEAADIBAAgBQAAyQQAIAYAAMoEACAKAADMBAAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIQveAQEAAAAB4gFAAAAAAeMBQAAAAAH8AQAAAPwBAv0BQAAAAAH-AUAAAAAB_wECAAAAAYACAQAAAAGCAgAAAIICAoMCAQAAAAGEAgEAAAABAwAAACEAIB8AAMUFACAgAADUBQAgCAAAACEAIA0AAIwEACAYAADUBQAg3gEBALgDACHfAQEAuAMAIeIBQAC5AwAh4wFAALkDACGNAgEAuAMAIQYNAACMBAAg3gEBALgDACHfAQEAuAMAIeIBQAC5AwAh4wFAALkDACGNAgEAuAMAIQMAAAAcACAfAADHBQAgIAAA1wUAIAkAAAAcACAOAACdBAAgGAAA1wUAIN4BAQC4AwAh4QEBALoDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGSAgEAuAMAIQcOAACdBAAg3gEBALgDACHhAQEAugMAIeIBQAC5AwAh4wFAALkDACHvAQEAuAMAIZICAQC4AwAhAwAAAA0AIB8AAMkFACAgAADaBQAgFQAAAA0AIAQAAMgEACAGAADKBAAgCQAAywQAIAoAAMwEACAYAADaBQAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIRMEAADIBAAgBgAAygQAIAkAAMsEACAKAADMBAAg3gEBALgDACHiAUAAuQMAIeMBQAC5AwAh7wEBALgDACGIAgEAugMAIaICAQC4AwAhpAIAAMYEpAIipQIBALgDACGmAiAAxwQAIacCQADOAwAhqAIBALoDACGpAiAAxwQAIaoCIADHBAAhqwIBALoDACGsAkAAzgMAIQ7eAQEAAAAB4gFAAAAAAeMBQAAAAAH6AQEAAAABhQIBAAAAAYYCAQAAAAGHAgEAAAABiAIBAAAAAYoCAAAAigIDiwJAAAAAAYwCQAAAAAGNAgEAAAABjgIBAAAAAZACAAAAkAICAQcAAgcDAAMLAA8NHQkPKQoQKw0RMAESMQYGBAYEBQgCBgwFCRIGChcHCwAIAQMAAwEDDgMCBwACCBMDAQMAAwQEGAAGGQAJGgAKGwADCwAMDCACDiQKAwsACwwlAg0ACQEMJgACDCcADigAAgsADgwsAgEMLQACETIAEjMAAAEHAAIBBwACBQsAFCUAFSYAFicAFygAGAAAAAAABQsAFCUAFSYAFicAFygAGAEDUwMBA1kDAwsAHScAHigAHwAAAAMLAB0nAB4oAB8AAAMLACQnACUoACYAAAADCwAkJwAlKAAmAQMAAwEDAAMDCwArJwAsKAAtAAAAAwsAKycALCgALQEDAAMBAwADAwsAMicAMygANAAAAAMLADInADMoADQAAAADCwA6JwA7KAA8AAAAAwsAOicAOygAPAAAAwsAQScAQigAQwAAAAMLAEEnAEIoAEMBDQAJAQ0ACQMLAEgnAEkoAEoAAAADCwBIJwBJKABKBAMAAw32AQkP9wEKEPgBDQQDAAMN_gEJD_8BChCAAg0DCwBPJwBQKABRAAAAAwsATycAUCgAUQIHAAIIkgIDAgcAAgiYAgMFCwBWJQBXJgBYJwBZKABaAAAAAAAFCwBWJQBXJgBYJwBZKABaAAAFCwBfJQBgJgBhJwBiKABjAAAAAAAFCwBfJQBgJgBhJwBiKABjAAAAAwsAaScAaigAawAAAAMLAGknAGooAGsTAgEUNAEVNQEWNgEXNwEZOQEaOxAbPBEcPgEdQBAeQRIhQgEiQwEjRBApRxMqSBkrSQUsSgUtSwUuTAUvTQUwTwUxURAyUhozVQU0VxA1WBs2WgU3WwU4XBA5Xxw6YCA7YgM8YwM9ZQM-ZgM_ZwNAaQNBaxBCbCFDbgNEcBBFcSJGcgNHcwNIdBBJdyNKeCdLeQRMegRNewROfARPfQRQfwRRgQEQUoIBKFOEAQRUhgEQVYcBKVaIAQRXiQEEWIoBEFmNASpajgEuW48BB1yQAQddkQEHXpIBB1-TAQdglQEHYZcBEGKYAS9jmgEHZJwBEGWdATBmngEHZ58BB2igARBpowExaqQBNWumATZspwE2baoBNm6rATZvrAE2cK4BNnGwARBysQE3c7MBNnS1ARB1tgE4drcBNne4ATZ4uQEQebwBOXq9AT17vwEJfMABCX3CAQl-wwEJf8QBCYABxgEJgQHIARCCAckBPoMBywEJhAHNARCFAc4BP4YBzwEJhwHQAQmIAdEBEIkB1AFAigHVAUSLAdYBCowB1wEKjQHYAQqOAdkBCo8B2gEKkAHcAQqRAd4BEJIB3wFFkwHhAQqUAeMBEJUB5AFGlgHlAQqXAeYBCpgB5wEQmQHqAUeaAesBS5sB7AECnAHtAQKdAe4BAp4B7wECnwHwAQKgAfIBAqEB9AEQogH1AUyjAfoBAqQB_AEQpQH9AU2mAYECAqcBggICqAGDAhCpAYYCTqoBhwJSqwGIAgasAYkCBq0BigIGrgGLAgavAYwCBrABjgIGsQGQAhCyAZECU7MBlAIGtAGWAhC1AZcCVLYBmQIGtwGaAga4AZsCELkBngJVugGfAlu7AaECDbwBogINvQGkAg2-AaUCDb8BpgINwAGoAg3BAaoCEMIBqwJcwwGtAg3EAa8CEMUBsAJdxgGxAg3HAbICDcgBswIQyQG2Al7KAbcCZMsBuQJlzAG6AmXNAb0CZc4BvgJlzwG_AmXQAcECZdEBwwIQ0gHEAmbTAcYCZdQByAIQ1QHJAmfWAcoCZdcBywJl2AHMAhDZAc8CaNoB0AJs"
 };
 async function decodeBase64AsWasm(wasmBase64) {
-  const { Buffer } = await import("buffer");
-  const wasmArray = Buffer.from(wasmBase64, "base64");
+  const { Buffer: Buffer2 } = await import("buffer");
+  const wasmArray = Buffer2.from(wasmBase64, "base64");
   return new WebAssembly.Module(wasmArray);
 }
 config.compilerWasm = {
@@ -72,14 +450,43 @@ var defineExtension = runtime2.Extensions.defineExtension;
 
 // src/generated/prisma/enums.ts
 var Role = {
-  USER: "USER",
-  ADMIN: "ADMIN"
+  ADMIN: "ADMIN",
+  HR: "HR",
+  EMPLOYEE: "EMPLOYEE"
 };
-var UserStatus = {
-  ACTIVE: "ACTIVE",
-  INACTIVE: "INACTIVE",
-  BLOCKED: "BLOCKED",
-  DELETED: "DELETED"
+var Gender = {
+  MALE: "MALE",
+  FEMALE: "FEMALE",
+  OTHER: "OTHER"
+};
+var EmploymentType = {
+  FULL_TIME: "FULL_TIME",
+  PART_TIME: "PART_TIME",
+  CONTRACT: "CONTRACT",
+  INTERN: "INTERN"
+};
+var AttendanceStatus = {
+  PRESENT: "PRESENT",
+  LATE: "LATE",
+  ABSENT: "ABSENT",
+  HALF_DAY: "HALF_DAY",
+  ON_LEAVE: "ON_LEAVE",
+  HOLIDAY: "HOLIDAY",
+  WEEKEND: "WEEKEND"
+};
+var LeaveType = {
+  CASUAL: "CASUAL",
+  SICK: "SICK",
+  ANNUAL: "ANNUAL",
+  MATERNITY: "MATERNITY",
+  PATERNITY: "PATERNITY",
+  UNPAID: "UNPAID"
+};
+var LeaveStatus = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  CANCELLED: "CANCELLED"
 };
 
 // src/generated/prisma/client.ts
@@ -92,7 +499,7 @@ var adapter = new PrismaPg({ connectionString });
 var prisma = new PrismaClient({ adapter });
 
 // src/app/lib/auth.ts
-import { bearer, emailOTP, oAuthProxy } from "better-auth/plugins";
+import { bearer, emailOTP, oAuthProxy, phoneNumber } from "better-auth/plugins";
 
 // src/app/config/env.ts
 import dotenv from "dotenv";
@@ -200,17 +607,12 @@ var auth = betterAuth({
       role: {
         type: "string",
         required: true,
-        defaultValue: Role.USER
+        defaultValue: Role.EMPLOYEE
       },
       emailVerified: {
         type: "boolean",
         returned: true,
         defaultValue: true
-      },
-      status: {
-        type: "string",
-        required: true,
-        defaultValue: UserStatus.ACTIVE
       },
       isDeleted: {
         type: "boolean",
@@ -266,6 +668,10 @@ var auth = betterAuth({
       expiresIn: 10 * 60,
       otpLength: 6,
       resendStrategy: "rotate"
+    }),
+    phoneNumber({
+      sendOTP: ({ phoneNumber: phoneNumber2, code }, ctx) => {
+      }
     })
   ],
   socialProviders: {
@@ -277,8 +683,7 @@ var auth = betterAuth({
       redirectURI: `${envVars.FRONTEND_URL}/api/auth/callback/google`,
       mapProfileToUser: () => {
         return {
-          role: Role.USER,
-          status: UserStatus.ACTIVE,
+          role: Role.EMPLOYEE,
           emailVerified: true,
           isDeleted: false,
           deletedAt: null
@@ -323,17 +728,19 @@ var auth = betterAuth({
 });
 
 // src/app.ts
+var import_cors = __toESM(require_lib(), 1);
+import cookieParser from "cookie-parser";
 import path2 from "path";
 import pinoHttp from "pino-http";
 
 // src/app/lib/pino.ts
 import { pino } from "pino";
 var logger = pino({
-  level: envVars.NODE_ENV === "production" ? "info" : "debug"
-  // transport:envVars.NODE_ENV==="production"?undefined:{
-  //           target: "pino-pretty",
-  //         options: { colorize: true }
-  // }
+  level: envVars.NODE_ENV === "production" ? "info" : "debug",
+  transport: envVars.NODE_ENV === "production" ? void 0 : {
+    target: "pino-pretty",
+    options: { colorize: true }
+  }
 });
 
 // src/app/lib/sentry.ts
@@ -348,12 +755,1946 @@ function initSentry() {
 }
 var initsentry = initSentry;
 
+// src/app/router/index.route.ts
+import { Router as Router7 } from "express";
+
+// src/app/module/auth/auth.route.ts
+import { Router } from "express";
+
+// src/app/shared/catchAsync.ts
+var catchAsync = (fn) => {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res, next);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || "Failed to fetch",
+        error: error.message
+      });
+    }
+  };
+};
+
+// src/app/shared/sendResponse.ts
+var sendResponse = (res, responseData) => {
+  const { httpStatusCode, success, message, data } = responseData;
+  res.status(httpStatusCode).json({
+    success,
+    message,
+    data
+  });
+};
+
+// src/app/utils/cookies.ts
+var setCookie = (res, key, value, options) => {
+  res.cookie(key, value, options);
+};
+var getCookie = (req, key) => {
+  return req.cookies[key];
+};
+var clearCookie = (res, key, options) => {
+  res.clearCookie(key, options);
+};
+var CookieUtils = {
+  setCookie,
+  getCookie,
+  clearCookie
+};
+
+// src/app/utils/jwt.ts
+import jwt from "jsonwebtoken";
+var createToken = (payload, secret, { expiresIn }) => {
+  const token = jwt.sign(payload, secret, { expiresIn });
+  return token;
+};
+var verifyToken = (token, secret) => {
+  try {
+    const decoded = jwt.verify(token, secret);
+    return {
+      success: true,
+      data: decoded
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      error
+    };
+  }
+};
+var decodeToken = (token) => {
+  const decoded = jwt.decode(token);
+  return decoded;
+};
+var jwtUtils = {
+  createToken,
+  verifyToken,
+  decodeToken
+};
+
+// src/app/utils/token.ts
+var getAccessToken = (payload) => {
+  const accessToken = jwtUtils.createToken(
+    payload,
+    envVars.ACCESS_TOKEN_SECRET,
+    { expiresIn: envVars.ACCESS_TOKEN_EXPIRES_IN }
+  );
+  return accessToken;
+};
+var getRefreshToken = (payload) => {
+  const refreshToken = jwtUtils.createToken(
+    payload,
+    envVars.REFRESH_TOKEN_SECRET,
+    { expiresIn: 60 }
+  );
+  return refreshToken;
+};
+var setAccessTokenCookie = (res, token) => {
+  CookieUtils.setCookie(res, "accessToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //1 day
+    maxAge: 60 * 60 * 60 * 24
+  });
+};
+var setRefreshTokenCookie = (res, token) => {
+  CookieUtils.setCookie(res, "refreshToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //7d
+    maxAge: 60 * 60 * 60 * 24 * 1e3
+  });
+};
+var setBetterAuthSessionCookie = (res, token) => {
+  CookieUtils.setCookie(res, "better-auth.session_token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //1 day
+    maxAge: 60 * 60 * 60 * 24
+  });
+};
+var tokenUtils = {
+  getAccessToken,
+  getRefreshToken,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+  setBetterAuthSessionCookie
+};
+
+// src/app/module/auth/auth.service.ts
+var UserRegister = async (payload) => {
+  const { name, email, password, phone, image } = payload;
+  const userExist = await prisma.user.findUnique({
+    where: { email }
+  });
+  if (!image) {
+    throw new AppError_default(E.BAD_REQUEST, "Image is required to register a user.");
+  }
+  if (userExist) {
+    throw new AppError_default(409, "user already exist,please try another email");
+  }
+  const data = await auth.api.signUpEmail({
+    body: {
+      name,
+      email,
+      password,
+      phone,
+      image
+    }
+  });
+  console.log({ userId: data?.user?.id }, "User registration response received");
+  if (!data.user) {
+    throw new AppError_default(400, "User register failed");
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  return {
+    ...data,
+    token: data.token,
+    accessToken,
+    refreshToken
+  };
+};
+var loginUser = async (payload) => {
+  const { email, password } = payload;
+  const data = await auth.api.signInEmail({
+    body: {
+      email,
+      password
+    }
+  });
+  const accessToken = tokenUtils.getAccessToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  return {
+    ...data,
+    accessToken,
+    refreshToken
+  };
+};
+var getMe = async (user) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const isUserExists = await prisma.user.findUnique({
+    where: {
+      id: user.userId
+    }
+  });
+  if (!isUserExists) {
+    throw new AppError_default(E.NOT_FOUND, "User not found");
+  }
+  return isUserExists;
+};
+var changePassword = async (payload, sessionToken) => {
+  const session = await auth.api.getSession({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  if (!session) {
+    throw new AppError_default(E.UNAUTHORIZED, "Invalid session token");
+  }
+  const { currentPassword, newPassword } = payload;
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true
+    },
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  if (!result) {
+    throw new AppError_default(400, "user change password failed");
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    isDeleted: session.user.isDeleted,
+    emailVerified: session.user.emailVerified
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    isDeleted: session.user.isDeleted,
+    emailVerified: session.user.emailVerified
+  });
+  return {
+    ...result,
+    accessToken,
+    refreshToken
+  };
+};
+var logoutUser = async (sessionToken) => {
+  const result = await auth.api.signOut({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  return result;
+};
+var forgetPassword = async (email) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  });
+  if (!isUserExist) {
+    throw new AppError_default(E.NOT_FOUND, "User not found");
+  }
+  await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email
+    }
+  });
+};
+var resetPassword = async (email, otp, newPassword) => {
+  console.log({ email }, "Password reset requested");
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  });
+  if (!isUserExist) {
+    throw new AppError_default(E.NOT_FOUND, "User not found");
+  }
+  await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword
+    }
+  });
+  await prisma.session.deleteMany({
+    where: {
+      userId: isUserExist.id
+    }
+  });
+};
+var verifyEmail = async (email, otp) => {
+  const result = await auth.api.verifyEmailOTP({
+    body: {
+      email,
+      otp
+    }
+  });
+  if (result.status && !result.user.emailVerified) {
+    await prisma.user.update({
+      where: {
+        email
+      },
+      data: {
+        emailVerified: true
+      }
+    });
+  }
+};
+var sendOtp = async (email) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  });
+  if (!user) {
+    throw new AppError_default(E.NOT_FOUND, "User not found");
+  }
+  if (user.emailVerified) {
+    throw new AppError_default(E.BAD_REQUEST, "Email already verified");
+  }
+  const result = await auth.api.sendVerificationOTP({
+    body: {
+      email,
+      // required
+      type: "email-verification"
+      // required
+    }
+  });
+  return result;
+};
+var googleLoginSuccess = async (session) => {
+  const isPatientExists = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    }
+  });
+  if (!isPatientExists) {
+    await prisma.user.create({
+      data: {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        image: ""
+      }
+    });
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: session?.user.id,
+    role: session?.user.role,
+    name: session?.user.name
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: session?.user.id,
+    role: session?.user.role,
+    name: session?.user.name
+  });
+  return {
+    accessToken,
+    refreshToken
+  };
+};
+var AuthService = {
+  UserRegister,
+  loginUser,
+  getMe,
+  changePassword,
+  logoutUser,
+  forgetPassword,
+  resetPassword,
+  verifyEmail,
+  googleLoginSuccess,
+  sendOtp
+};
+
+// src/app/module/auth/auth.controller.ts
+var UserRegister2 = catchAsync(async (req, res) => {
+  const payload = {
+    ...req.body,
+    image: req.body.image
+  };
+  const result = await AuthService.UserRegister(payload);
+  const { accessToken, refreshToken, token } = result;
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  tokenUtils.setBetterAuthSessionCookie(res, token);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "user registered successfully",
+    data: result
+  });
+});
+var loginUser2 = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const result = await AuthService.loginUser(payload);
+  console.log(
+    payload,
+    "payload"
+  );
+  const { accessToken, refreshToken, token } = result;
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  tokenUtils.setBetterAuthSessionCookie(res, token);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "User logged in successfully",
+    data: result
+  });
+});
+var getMe2 = catchAsync(async (req, res) => {
+  if (!req.user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const data = await AuthService.getMe(req.user);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "User data retrieved successfully",
+    data
+  });
+});
+var changePassword2 = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+  const result = await AuthService.changePassword(
+    payload,
+    betterAuthSessionToken
+  );
+  const { accessToken, refreshToken, token } = result;
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  tokenUtils.setBetterAuthSessionCookie(res, token);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Password changed successfully",
+    data: result
+  });
+});
+var logoutUser2 = catchAsync(async (req, res) => {
+  const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+  const result = await AuthService.logoutUser(betterAuthSessionToken);
+  CookieUtils.clearCookie(res, "accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none"
+  });
+  CookieUtils.clearCookie(res, "refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none"
+  });
+  CookieUtils.clearCookie(res, "better-auth.session_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none"
+  });
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "User logged out successfully",
+    data: result
+  });
+});
+var forgetPassword2 = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  await AuthService.forgetPassword(email);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Password reset OTP sent to email successfully"
+  });
+});
+var resetPassword2 = catchAsync(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  await AuthService.resetPassword(email, otp, newPassword);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Password reset successfully"
+  });
+});
+var verifyEmail2 = catchAsync(async (req, res) => {
+  const { email, otp } = req.body;
+  await AuthService.verifyEmail(email, otp);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Email verified successfully"
+  });
+});
+var sendOtp2 = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  await AuthService.sendOtp(email);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "OTP sent to email successfully"
+  });
+});
+var googleLogin = catchAsync((req, res) => {
+  const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`;
+  res.render("googleRedirect", {
+    callbackURL,
+    betterAuthUrl: envVars.BETTER_AUTH_URL
+  });
+});
+var googleLoginSuccess2 = catchAsync(async (req, res) => {
+  const redirectPath = req.query.redirect || "/dashboard";
+  const sessionToken = req.cookies["better-auth.session_token"];
+  if (!sessionToken) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`);
+  }
+  const session = await auth.api.getSession({
+    headers: {
+      "Cookie": `better-auth.session_token=${sessionToken}`
+    }
+  });
+  if (!session) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_session_found`);
+  }
+  if (session && !session.user) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_user_found`);
+  }
+  const result = await AuthService.googleLoginSuccess(session);
+  const { accessToken, refreshToken } = result;
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+  const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
+  res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`);
+});
+var handleOAuthError = catchAsync((req, res) => {
+  const error = req.query.error || "oauth_failed";
+  res.redirect(`${envVars.FRONTEND_URL}/login?error=${error}`);
+});
+var AuthController = {
+  UserRegister: UserRegister2,
+  loginUser: loginUser2,
+  getMe: getMe2,
+  changePassword: changePassword2,
+  logoutUser: logoutUser2,
+  forgetPassword: forgetPassword2,
+  resetPassword: resetPassword2,
+  verifyEmail: verifyEmail2,
+  googleLogin,
+  googleLoginSuccess: googleLoginSuccess2,
+  handleOAuthError,
+  sendOtp: sendOtp2
+};
+
+// src/app/module/auth/auth.validation.ts
+import { z } from "zod";
+var createUserSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  phone: z.string().optional(),
+  image: z.any()
+});
+
+// src/app/middleware/validateRequest.ts
+var validateRequest = (zodSchema) => {
+  return (req, res, next) => {
+    console.log(req.file, "file");
+    if (req.body?.data) {
+      try {
+        req.body = JSON.parse(req.body.data);
+      } catch (e2) {
+        return next(new Error("Invalid JSON in 'data' field"));
+      }
+    }
+    const parsedResult = zodSchema.safeParse(req.body);
+    if (!parsedResult.success) {
+      return next(parsedResult.error);
+    }
+    req.body = parsedResult.data;
+    next();
+  };
+};
+
+// src/app/middleware/Auth.ts
+var auth2 = (roles) => {
+  return async (req, res, next) => {
+    try {
+      console.log(roles, "roles");
+      const sessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
+      console.log(sessionToken, "session");
+      const accessToken = CookieUtils.getCookie(req, "accessToken");
+      let isAuthenticated = false;
+      if (sessionToken) {
+        const betterSession = await auth.api.getSession({ headers: req.headers });
+        if (betterSession && betterSession.session) {
+          const sessionExists = await prisma.session.findFirst({
+            where: {
+              token: betterSession.session.token,
+              expiresAt: { gt: /* @__PURE__ */ new Date() }
+            },
+            include: { user: true }
+          });
+          if (sessionExists && sessionExists.user) {
+            const user = sessionExists.user;
+            const now = /* @__PURE__ */ new Date();
+            const expiresAt = new Date(sessionExists.expiresAt);
+            const createdAt = new Date(sessionExists.createdAt);
+            const sessionLifeTime = expiresAt.getTime() - createdAt.getTime();
+            const timeRemaining = expiresAt.getTime() - now.getTime();
+            const percentRemaining = timeRemaining / sessionLifeTime * 100;
+            if (percentRemaining < 20) {
+              res.setHeader("X-Session-Refresh", "true");
+              res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
+            }
+            if (roles.length > 0 && !roles.includes(user.role)) {
+              throw new AppError_default(E.FORBIDDEN, "Forbidden access! No permission.");
+            }
+            req.user = { userId: user.id, role: user.role, email: user.email };
+            isAuthenticated = true;
+          }
+        }
+      }
+      if (!isAuthenticated && accessToken) {
+        const verifiedToken = jwtUtils.verifyToken(
+          accessToken,
+          process.env.ACCESS_TOKEN_SECRET
+        );
+        if (verifiedToken.success && verifiedToken.data) {
+          const userData = verifiedToken.data;
+          if (roles.length > 0 && !roles.includes(userData.role)) {
+            throw new AppError_default(E.FORBIDDEN, "Forbidden access! No permission.");
+          }
+          req.user = {
+            userId: userData.userId,
+            role: userData.role,
+            email: userData.email
+          };
+          isAuthenticated = true;
+        }
+      }
+      if (!isAuthenticated) {
+        throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access! No valid session or token.");
+      }
+      next();
+    } catch (error) {
+      console.log(error, "message");
+      throw new AppError_default(error.statusCode || E.BAD_REQUEST, error.message);
+    }
+  };
+};
+var Auth_default = auth2;
+
+// src/app/lib/rateLimit.ts
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+var createLimiter = (options) => {
+  return rateLimit({
+    windowMs: options.windowMs,
+    keyGenerator: (req) => {
+      return ipKeyGenerator(req.ip || "unknown-ip");
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    limit: async (req) => {
+      return options.limit;
+    },
+    handler: (_req, res) => {
+      res.status(429).json({
+        success: false,
+        message: options.message
+      });
+    }
+  });
+};
+
+// src/app/middleware/limitter.ts
+var authLimiter = createLimiter({
+  windowMs: 1 * 60 * 1e3,
+  limit: 10,
+  message: "Too many auth attempts"
+});
+var publicandprivateLimiter = createLimiter({
+  windowMs: 1 * 60 * 1e3,
+  limit: 20,
+  message: "Too many requests on public route"
+});
+
+// src/app/module/auth/auth.route.ts
+var router = Router();
+router.post("/register", authLimiter, validateRequest(createUserSchema), AuthController.UserRegister);
+router.post("/login", authLimiter, AuthController.loginUser);
+router.get("/me", authLimiter, Auth_default([Role.ADMIN, Role.EMPLOYEE, Role.HR]), AuthController.getMe);
+router.post("/change-password", authLimiter, Auth_default([Role.ADMIN, Role.EMPLOYEE, Role.HR]), AuthController.changePassword);
+router.post("/logout", authLimiter, Auth_default([Role.ADMIN, Role.EMPLOYEE, Role.HR]), AuthController.logoutUser);
+router.post("/forget-password", authLimiter, AuthController.forgetPassword);
+router.post("/reset-password", authLimiter, AuthController.resetPassword);
+router.post("/verify-email", authLimiter, AuthController.verifyEmail);
+router.post("/send-otp", authLimiter, AuthController.sendOtp);
+router.get("/login/google", authLimiter, AuthController.googleLogin);
+router.get("/google/success", authLimiter, AuthController.googleLoginSuccess);
+router.get("/oauth/error", AuthController.handleOAuthError);
+var AuthRouters = router;
+
+// src/app/module/employee/employee.route.ts
+import { Router as Router2 } from "express";
+
+// src/app/helpers/Pagination.ts
+var paginationSortingHelper = (options) => {
+  const page = Number(options.page) || 1;
+  const limit = Number(options.limit) || 9;
+  const skip = (page - 1) * limit;
+  const sortBy = options.sortBy || "createdAt";
+  const sortOrder = options.sortOrder || "desc";
+  return {
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder
+  };
+};
+var Pagination_default = paginationSortingHelper;
+
+// src/app/module/employee/employee.service.ts
+var getMyProfile = async (user) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId },
+    include: {
+      user: { select: { id: true, email: true, role: true } },
+      department: true,
+      position: true,
+      workSchedule: true
+    }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  return employee;
+};
+var createEmployeeProfile = async (user, payload) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const targetUserId = payload.userId || user.userId;
+  const { employeeId, ...restPayload } = payload;
+  const userExist = await prisma.user.findUnique({
+    where: { id: targetUserId },
+    include: { employeeProfile: { select: { id: true } } }
+  });
+  const id = userExist?.employeeProfile?.id;
+  if (!userExist) {
+    throw new AppError_default(E.NOT_FOUND, "User account not found!");
+  }
+  if (userExist.employeeProfile) {
+    throw new AppError_default(E.CONFLICT, "Employee profile already exists for this user!");
+  }
+  const isEmpIdExist = await prisma.employeeProfile.findUnique({
+    where: { employeeId: id }
+  });
+  if (isEmpIdExist) {
+    throw new AppError_default(E.CONFLICT, "Employee ID already exists!");
+  }
+  return await prisma.employeeProfile.create({
+    data: {
+      userId: targetUserId,
+      employeeId,
+      ...restPayload,
+      dateOfBirth: restPayload.dateOfBirth ? new Date(restPayload.dateOfBirth) : void 0,
+      joiningDate: new Date(restPayload.joiningDate)
+    },
+    include: {
+      user: { select: { id: true, email: true, role: true } },
+      department: true,
+      position: true,
+      workSchedule: true
+    }
+  });
+};
+var getAllEmployees = async (query) => {
+  const { page, limit, skip, sortBy, sortOrder } = Pagination_default(query);
+  const { searchTerm, departmentId, positionId } = query;
+  const whereConditions = {};
+  if (searchTerm) {
+    whereConditions.OR = [
+      { firstName: { contains: searchTerm, mode: "insensitive" } },
+      { lastName: { contains: searchTerm, mode: "insensitive" } },
+      { employeeId: { contains: searchTerm, mode: "insensitive" } },
+      { phone: { contains: searchTerm, mode: "insensitive" } },
+      { user: { email: { contains: searchTerm, mode: "insensitive" } } }
+    ];
+  }
+  if (departmentId) whereConditions.departmentId = departmentId;
+  if (positionId) whereConditions.positionId = positionId;
+  const [data, total] = await Promise.all([
+    prisma.employeeProfile.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder },
+      include: {
+        user: { select: { id: true, email: true, role: true } },
+        department: true,
+        position: true,
+        workSchedule: true
+      }
+    }),
+    prisma.employeeProfile.count({ where: whereConditions })
+  ]);
+  return {
+    meta: { page, limit, total, totalPage: Math.ceil(total / limit) },
+    data
+  };
+};
+var updateEmployeeProfile = async (id, payload) => {
+  if (!id) {
+    throw new AppError_default(E.BAD_REQUEST, "Employee Profile ID is required!");
+  }
+  const isExist = await prisma.employeeProfile.findUnique({ where: { id } });
+  if (!isExist) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  return await prisma.employeeProfile.update({
+    where: { id },
+    data: {
+      ...payload,
+      dateOfBirth: payload.dateOfBirth ? new Date(payload.dateOfBirth) : void 0,
+      joiningDate: payload.joiningDate ? new Date(payload.joiningDate) : void 0
+    },
+    include: {
+      department: true,
+      position: true,
+      workSchedule: true
+    }
+  });
+};
+var EmployeeService = {
+  getMyProfile,
+  createEmployeeProfile,
+  getAllEmployees,
+  updateEmployeeProfile
+};
+
+// src/app/module/employee/employee.controller.ts
+var getMyProfile2 = catchAsync(async (req, res) => {
+  const result = await EmployeeService.getMyProfile(req.user);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Profile retrieved successfully",
+    data: result
+  });
+});
+var createEmployeeProfile2 = catchAsync(async (req, res) => {
+  const result = await EmployeeService.createEmployeeProfile(req.user, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Employee profile created successfully",
+    data: result
+  });
+});
+var getAllEmployees2 = catchAsync(async (req, res) => {
+  const result = await EmployeeService.getAllEmployees(req.query);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Employees fetched successfully",
+    data: result.data
+  });
+});
+var updateEmployeeProfile2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await EmployeeService.updateEmployeeProfile(id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Employee profile updated successfully",
+    data: result
+  });
+});
+var EmployeeController = {
+  getMyProfile: getMyProfile2,
+  createEmployeeProfile: createEmployeeProfile2,
+  getAllEmployees: getAllEmployees2,
+  updateEmployeeProfile: updateEmployeeProfile2
+};
+
+// src/app/module/employee/employee.validation.ts
+import { z as z2 } from "zod";
+var createEmployeeSchema = z2.object({
+  userId: z2.string().uuid("Invalid User ID format").optional(),
+  employeeId: z2.string().min(1, "Employee ID cannot be empty"),
+  firstName: z2.string().min(1, "First name cannot be empty"),
+  lastName: z2.string().min(1, "Last name cannot be empty"),
+  phone: z2.string().optional(),
+  gender: z2.nativeEnum(Gender).optional(),
+  dateOfBirth: z2.string().datetime().or(z2.date()).optional(),
+  joiningDate: z2.string().datetime().or(z2.date()),
+  departmentId: z2.string().uuid("Invalid Department ID").optional(),
+  positionId: z2.string().uuid("Invalid Position ID").optional(),
+  employmentType: z2.nativeEnum(EmploymentType).optional(),
+  workScheduleId: z2.string().uuid("Invalid Work Schedule ID").optional()
+});
+var updateEmployeeSchema = createEmployeeSchema.partial().omit({
+  userId: true,
+  employeeId: true
+});
+var employeeQuerySchema = z2.object({
+  page: z2.string().optional(),
+  limit: z2.string().optional(),
+  searchTerm: z2.string().optional(),
+  departmentId: z2.string().uuid().optional(),
+  positionId: z2.string().uuid().optional(),
+  sortBy: z2.string().optional(),
+  sortOrder: z2.enum(["asc", "desc"]).optional()
+});
+
+// src/app/module/employee/employee.route.ts
+var router2 = Router2();
+router2.get(
+  "/me",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  EmployeeController.getMyProfile
+);
+router2.post(
+  "/create-profile",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  validateRequest(createEmployeeSchema),
+  EmployeeController.createEmployeeProfile
+);
+router2.get(
+  "/",
+  Auth_default([Role.ADMIN, Role.HR]),
+  EmployeeController.getAllEmployees
+);
+router2.patch(
+  "/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updateEmployeeSchema),
+  EmployeeController.updateEmployeeProfile
+);
+var EmployeeRoutes = router2;
+
+// src/app/module/attendance/attendance.route.ts
+import { Router as Router3 } from "express";
+
+// src/app/module/attendance/attendance.service.ts
+var checkIn = async (user, payload) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  const today = /* @__PURE__ */ new Date();
+  today.setHours(0, 0, 0, 0);
+  const existingAttendance = await prisma.attendance.findUnique({
+    where: {
+      employeeId_date: {
+        employeeId: employee.id,
+        date: today
+      }
+    }
+  });
+  if (existingAttendance?.checkIn) {
+    throw new AppError_default(E.BAD_REQUEST, "You have already checked in today!");
+  }
+  const now = /* @__PURE__ */ new Date();
+  const officeStartTime = /* @__PURE__ */ new Date();
+  officeStartTime.setHours(9, 0, 0, 0);
+  let lateMinutes = 0;
+  let attendanceStatus = AttendanceStatus.PRESENT;
+  if (now > officeStartTime) {
+    lateMinutes = Math.floor((now.getTime() - officeStartTime.getTime()) / (1e3 * 60));
+    attendanceStatus = AttendanceStatus.LATE;
+  }
+  return await prisma.attendance.upsert({
+    where: {
+      employeeId_date: {
+        employeeId: employee.id,
+        date: today
+      }
+    },
+    update: {
+      checkIn: now,
+      status: attendanceStatus,
+      lateMinutes,
+      checkInIp: payload.checkInIp,
+      notes: payload.notes
+    },
+    create: {
+      employeeId: employee.id,
+      date: today,
+      checkIn: now,
+      status: attendanceStatus,
+      lateMinutes,
+      checkInIp: payload.checkInIp,
+      notes: payload.notes
+    }
+  });
+};
+var checkOut = async (user, payload) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  const today = /* @__PURE__ */ new Date();
+  today.setHours(0, 0, 0, 0);
+  const attendance = await prisma.attendance.findUnique({
+    where: {
+      employeeId_date: {
+        employeeId: employee.id,
+        date: today
+      }
+    }
+  });
+  if (!attendance || !attendance.checkIn) {
+    throw new AppError_default(E.BAD_REQUEST, "You cannot check out without checking in first!");
+  }
+  if (attendance.checkOut) {
+    throw new AppError_default(E.BAD_REQUEST, "You have already checked out today!");
+  }
+  const checkOutTime = /* @__PURE__ */ new Date();
+  const diffInMs = checkOutTime.getTime() - new Date(attendance.checkIn).getTime();
+  const totalHours = parseFloat((diffInMs / (1e3 * 60 * 60)).toFixed(2));
+  const standardWorkHours = 8;
+  const overtimeHours = totalHours > standardWorkHours ? parseFloat((totalHours - standardWorkHours).toFixed(2)) : 0;
+  return await prisma.attendance.update({
+    where: { id: attendance.id },
+    data: {
+      checkOut: checkOutTime,
+      workingHours: totalHours,
+      overtimeHours,
+      checkOutIp: payload.checkOutIp,
+      notes: payload.notes ? `${attendance.notes || ""} | Out Note: ${payload.notes}` : attendance.notes
+    }
+  });
+};
+var getMyAttendanceHistory = async (user, query) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  const { page, limit, skip, sortBy, sortOrder } = Pagination_default(query);
+  const { startDate, endDate, status: attendanceStatus } = query;
+  const whereConditions = { employeeId: employee.id };
+  if (startDate && endDate) {
+    whereConditions.date = {
+      gte: new Date(startDate),
+      lte: new Date(endDate)
+    };
+  }
+  if (attendanceStatus) {
+    whereConditions.status = attendanceStatus;
+  }
+  const [data, total] = await Promise.all([
+    prisma.attendance.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder }
+    }),
+    prisma.attendance.count({ where: whereConditions })
+  ]);
+  return {
+    meta: { page, limit, total, totalPage: Math.ceil(total / limit) },
+    data
+  };
+};
+var AttendanceService = {
+  checkIn,
+  checkOut,
+  getMyAttendanceHistory
+};
+
+// src/app/module/attendance/attendance.controller.ts
+var checkIn2 = catchAsync(async (req, res) => {
+  const result = await AttendanceService.checkIn(req.user, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Checked in successfully",
+    data: result
+  });
+});
+var checkOut2 = catchAsync(async (req, res) => {
+  const result = await AttendanceService.checkOut(req.user, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Checked out successfully",
+    data: result
+  });
+});
+var getMyAttendanceHistory2 = catchAsync(async (req, res) => {
+  const result = await AttendanceService.getMyAttendanceHistory(req.user, req.query);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Attendance history retrieved successfully",
+    data: result.data
+  });
+});
+var AttendanceController = {
+  checkIn: checkIn2,
+  checkOut: checkOut2,
+  getMyAttendanceHistory: getMyAttendanceHistory2
+};
+
+// src/app/module/attendance/attendance.validation.ts
+import { z as z3 } from "zod";
+var checkInSchema = z3.object({
+  notes: z3.string().optional(),
+  checkInIp: z3.string().optional()
+});
+var checkOutSchema = z3.object({
+  notes: z3.string().optional(),
+  checkOutIp: z3.string().optional()
+});
+var attendanceQuerySchema = z3.object({
+  page: z3.string().optional(),
+  limit: z3.string().optional(),
+  startDate: z3.string().optional(),
+  endDate: z3.string().optional(),
+  status: z3.nativeEnum(AttendanceStatus).optional(),
+  employeeId: z3.string().uuid().optional(),
+  sortBy: z3.string().optional(),
+  sortOrder: z3.enum(["asc", "desc"]).optional()
+});
+
+// src/app/module/attendance/attendance.route.ts
+var router3 = Router3();
+router3.post(
+  "/check-in",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  validateRequest(checkInSchema),
+  AttendanceController.checkIn
+);
+router3.patch(
+  "/check-out",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  validateRequest(checkOutSchema),
+  AttendanceController.checkOut
+);
+router3.get(
+  "/my-history",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  AttendanceController.getMyAttendanceHistory
+);
+var AttendanceRoutes = router3;
+
+// src/app/module/department/department-position.route.ts
+import { Router as Router4 } from "express";
+
+// src/app/module/department/department-position.service.ts
+var createDepartment = async (payload) => {
+  const isExist = await prisma.department.findFirst({
+    where: {
+      OR: [{ name: payload.name }, { code: payload.code }]
+    }
+  });
+  if (isExist) {
+    throw new AppError_default(E.CONFLICT, "Department with this name or code already exists!");
+  }
+  return await prisma.department.create({ data: payload });
+};
+var getAllDepartments = async () => {
+  return await prisma.department.findMany({
+    include: {
+      positions: true,
+      _count: { select: { employees: true } }
+    }
+  });
+};
+var updateDepartment = async (id, payload) => {
+  const department = await prisma.department.findUnique({ where: { id } });
+  if (!department) {
+    throw new AppError_default(E.NOT_FOUND, "Department not found!");
+  }
+  return await prisma.department.update({
+    where: { id },
+    data: payload
+  });
+};
+var deleteDepartment = async (id) => {
+  const department = await prisma.department.findUnique({ where: { id } });
+  if (!department) {
+    throw new AppError_default(E.NOT_FOUND, "Department not found!");
+  }
+  return await prisma.department.delete({ where: { id } });
+};
+var createPosition = async (payload) => {
+  const department = await prisma.department.findUnique({
+    where: { id: payload.departmentId }
+  });
+  if (!department) {
+    throw new AppError_default(E.NOT_FOUND, "Department not found!");
+  }
+  const isExist = await prisma.position.findUnique({
+    where: {
+      title_departmentId: {
+        title: payload.title,
+        departmentId: payload.departmentId
+      }
+    }
+  });
+  if (isExist) {
+    throw new AppError_default(E.CONFLICT, "Position title already exists in this department!");
+  }
+  return await prisma.position.create({
+    data: payload,
+    include: { department: true }
+  });
+};
+var getAllPositions = async () => {
+  return await prisma.position.findMany({
+    include: {
+      department: true,
+      _count: { select: { employees: true } }
+    }
+  });
+};
+var updatePosition = async (id, payload) => {
+  const position = await prisma.position.findUnique({ where: { id } });
+  if (!position) {
+    throw new AppError_default(E.NOT_FOUND, "Position not found!");
+  }
+  return await prisma.position.update({
+    where: { id },
+    data: payload,
+    include: { department: true }
+  });
+};
+var deletePosition = async (id) => {
+  const position = await prisma.position.findUnique({ where: { id } });
+  if (!position) {
+    throw new AppError_default(E.NOT_FOUND, "Position not found!");
+  }
+  return await prisma.position.delete({ where: { id } });
+};
+var DepartmentPositionService = {
+  createDepartment,
+  getAllDepartments,
+  updateDepartment,
+  deleteDepartment,
+  createPosition,
+  getAllPositions,
+  updatePosition,
+  deletePosition
+};
+
+// src/app/module/department/department-position.controller.ts
+var createDepartment2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.createDepartment(req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Department created successfully",
+    data: result
+  });
+});
+var getAllDepartments2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.getAllDepartments();
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Departments fetched successfully",
+    data: result
+  });
+});
+var updateDepartment2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.updateDepartment(req.params.id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Department updated successfully",
+    data: result
+  });
+});
+var deleteDepartment2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.deleteDepartment(req.params.id);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Department deleted successfully",
+    data: result
+  });
+});
+var createPosition2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.createPosition(req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Position created successfully",
+    data: result
+  });
+});
+var getAllPositions2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.getAllPositions();
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Positions fetched successfully",
+    data: result
+  });
+});
+var updatePosition2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.updatePosition(req.params.id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Position updated successfully",
+    data: result
+  });
+});
+var deletePosition2 = catchAsync(async (req, res) => {
+  const result = await DepartmentPositionService.deletePosition(req.params.id);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Position deleted successfully",
+    data: result
+  });
+});
+var DepartmentPositionController = {
+  createDepartment: createDepartment2,
+  getAllDepartments: getAllDepartments2,
+  updateDepartment: updateDepartment2,
+  deleteDepartment: deleteDepartment2,
+  createPosition: createPosition2,
+  getAllPositions: getAllPositions2,
+  updatePosition: updatePosition2,
+  deletePosition: deletePosition2
+};
+
+// src/app/module/department/department-position.validation.ts
+import { z as z4 } from "zod";
+var createDepartmentSchema = z4.object({
+  name: z4.string().min(1),
+  code: z4.string().min(1),
+  description: z4.string().optional()
+});
+var updateDepartmentSchema = createDepartmentSchema.partial();
+var createPositionSchema = z4.object({
+  title: z4.string().min(1),
+  departmentId: z4.string().uuid("Invalid Department ID")
+});
+var updatePositionSchema = createPositionSchema.partial();
+
+// src/app/module/department/department-position.route.ts
+var router4 = Router4();
+router4.post(
+  "/departments",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(createDepartmentSchema),
+  DepartmentPositionController.createDepartment
+);
+router4.get(
+  "/departments",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  DepartmentPositionController.getAllDepartments
+);
+router4.patch(
+  "/departments/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updateDepartmentSchema),
+  DepartmentPositionController.updateDepartment
+);
+router4.delete(
+  "/departments/:id",
+  Auth_default([Role.ADMIN]),
+  DepartmentPositionController.deleteDepartment
+);
+router4.post(
+  "/positions",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(createPositionSchema),
+  DepartmentPositionController.createPosition
+);
+router4.get(
+  "/positions",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  DepartmentPositionController.getAllPositions
+);
+router4.patch(
+  "/positions/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updatePositionSchema),
+  DepartmentPositionController.updatePosition
+);
+router4.delete(
+  "/positions/:id",
+  Auth_default([Role.ADMIN]),
+  DepartmentPositionController.deletePosition
+);
+var DepartmentPositionRoutes = router4;
+
+// src/app/module/leave/leave-request.route.ts
+import { Router as Router5 } from "express";
+
+// src/app/module/leave/leave-request.interface.service.ts
+var createLeaveRequest = async (user, payload) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  const start = new Date(payload.startDate);
+  const end = new Date(payload.endDate);
+  if (start > end) {
+    throw new AppError_default(E.BAD_REQUEST, "Start date cannot be after end date!");
+  }
+  const timeDiff = Math.abs(end.getTime() - start.getTime());
+  const totalDays = Math.ceil(timeDiff / (1e3 * 3600 * 24)) + 1;
+  const existingLeave = await prisma.leaveRequest.findFirst({
+    where: {
+      employeeId: employee.id,
+      status: { in: [LeaveStatus.PENDING, LeaveStatus.APPROVED] },
+      OR: [
+        { startDate: { lte: end }, endDate: { gte: start } }
+      ]
+    }
+  });
+  if (existingLeave) {
+    throw new AppError_default(E.CONFLICT, "You already have a pending or approved leave request during this date range!");
+  }
+  return await prisma.leaveRequest.create({
+    data: {
+      employeeId: employee.id,
+      leaveType: payload.leaveType,
+      startDate: start,
+      endDate: end,
+      totalDays,
+      reason: payload.reason
+    },
+    include: {
+      employee: { select: { id: true, firstName: true, lastName: true, employeeId: true } }
+    }
+  });
+};
+var getMyLeaveRequests = async (user, query) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const employee = await prisma.employeeProfile.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!employee) {
+    throw new AppError_default(E.NOT_FOUND, "Employee profile not found!");
+  }
+  const { page, limit, skip, sortBy, sortOrder } = Pagination_default(query);
+  const { status: leaveStatus, leaveType } = query;
+  const whereConditions = { employeeId: employee.id };
+  if (leaveStatus) whereConditions.status = leaveStatus;
+  if (leaveType) whereConditions.leaveType = leaveType;
+  const [data, total] = await Promise.all([
+    prisma.leaveRequest.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder },
+      include: {
+        approvedBy: { select: { id: true, email: true, role: true } }
+      }
+    }),
+    prisma.leaveRequest.count({ where: whereConditions })
+  ]);
+  return {
+    meta: { page, limit, total, totalPage: Math.ceil(total / limit) },
+    data
+  };
+};
+var getAllLeaveRequests = async (query) => {
+  const { page, limit, skip, sortBy, sortOrder } = Pagination_default(query);
+  const { status: leaveStatus, leaveType, employeeId } = query;
+  const whereConditions = {};
+  if (leaveStatus) whereConditions.status = leaveStatus;
+  if (leaveType) whereConditions.leaveType = leaveType;
+  if (employeeId) whereConditions.employeeId = employeeId;
+  const [data, total] = await Promise.all([
+    prisma.leaveRequest.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder },
+      include: {
+        employee: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            employeeId: true,
+            department: { select: { name: true } }
+          }
+        },
+        approvedBy: { select: { id: true, email: true, role: true } }
+      }
+    }),
+    prisma.leaveRequest.count({ where: whereConditions })
+  ]);
+  return {
+    meta: { page, limit, total, totalPage: Math.ceil(total / limit) },
+    data
+  };
+};
+var updateLeaveStatus = async (user, requestId, payload) => {
+  if (!user?.userId) {
+    throw new AppError_default(E.UNAUTHORIZED, "Unauthorized access. Please login first.");
+  }
+  const leaveRequest = await prisma.leaveRequest.findUnique({
+    where: { id: requestId }
+  });
+  if (!leaveRequest) {
+    throw new AppError_default(E.NOT_FOUND, "Leave request not found!");
+  }
+  return await prisma.leaveRequest.update({
+    where: { id: requestId },
+    data: {
+      status: payload.status,
+      adminRemarks: payload.adminRemarks,
+      approvedById: user.userId
+    },
+    include: {
+      employee: true,
+      approvedBy: { select: { id: true, email: true, role: true } }
+    }
+  });
+};
+var LeaveRequestService = {
+  createLeaveRequest,
+  getMyLeaveRequests,
+  getAllLeaveRequests,
+  updateLeaveStatus
+};
+
+// src/app/module/leave/leave-request.controller.ts
+var createLeaveRequest2 = catchAsync(async (req, res) => {
+  const result = await LeaveRequestService.createLeaveRequest(req.user, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Leave request submitted successfully",
+    data: result
+  });
+});
+var getMyLeaveRequests2 = catchAsync(async (req, res) => {
+  const result = await LeaveRequestService.getMyLeaveRequests(req.user, req.query);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "My leave requests fetched successfully",
+    data: result.data
+  });
+});
+var getAllLeaveRequests2 = catchAsync(async (req, res) => {
+  const result = await LeaveRequestService.getAllLeaveRequests(req.query);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "All leave requests fetched successfully",
+    data: result.data
+  });
+});
+var updateLeaveStatus2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await LeaveRequestService.updateLeaveStatus(req.user, id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: `Leave request status updated to ${req.body.status}`,
+    data: result
+  });
+});
+var LeaveRequestController = {
+  createLeaveRequest: createLeaveRequest2,
+  getMyLeaveRequests: getMyLeaveRequests2,
+  getAllLeaveRequests: getAllLeaveRequests2,
+  updateLeaveStatus: updateLeaveStatus2
+};
+
+// src/app/module/leave/leave-request.validation.ts
+import { z as z5 } from "zod";
+var createLeaveRequestSchema = z5.object({
+  leaveType: z5.nativeEnum(LeaveType),
+  startDate: z5.string().datetime().or(z5.date()),
+  endDate: z5.string().datetime().or(z5.date()),
+  reason: z5.string().min(5, "Reason must be at least 5 characters long")
+});
+var updateLeaveStatusSchema = z5.object({
+  status: z5.enum([LeaveStatus.APPROVED, LeaveStatus.REJECTED, LeaveStatus.PENDING]),
+  adminRemarks: z5.string().optional()
+});
+var leaveRequestQuerySchema = z5.object({
+  page: z5.string().optional(),
+  limit: z5.string().optional(),
+  status: z5.nativeEnum(LeaveStatus).optional(),
+  leaveType: z5.nativeEnum(LeaveType).optional(),
+  employeeId: z5.string().uuid().optional(),
+  sortBy: z5.string().optional(),
+  sortOrder: z5.enum(["asc", "desc"]).optional()
+});
+
+// src/app/module/leave/leave-request.route.ts
+var router5 = Router5();
+router5.post(
+  "/",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  validateRequest(createLeaveRequestSchema),
+  LeaveRequestController.createLeaveRequest
+);
+router5.get(
+  "/my-requests",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  LeaveRequestController.getMyLeaveRequests
+);
+router5.get(
+  "/",
+  Auth_default([Role.ADMIN, Role.HR]),
+  LeaveRequestController.getAllLeaveRequests
+);
+router5.patch(
+  "/:id/status",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updateLeaveStatusSchema),
+  LeaveRequestController.updateLeaveStatus
+);
+var LeaveRequestRoutes = router5;
+
+// src/app/module/schedule/schedule-holiday.route.ts
+import { Router as Router6 } from "express";
+
+// src/app/module/schedule/schedule-holiday.service.ts
+var createWorkSchedule = async (payload) => {
+  const isExist = await prisma.workSchedule.findUnique({
+    where: { name: payload.name }
+  });
+  if (isExist) {
+    throw new AppError_default(E.CONFLICT, "Work schedule with this name already exists!");
+  }
+  return await prisma.workSchedule.create({
+    data: payload
+  });
+};
+var getAllWorkSchedules = async () => {
+  return await prisma.workSchedule.findMany({
+    include: {
+      _count: { select: { employees: true } }
+    }
+  });
+};
+var updateWorkSchedule = async (id, payload) => {
+  const isExist = await prisma.workSchedule.findUnique({ where: { id } });
+  if (!isExist) {
+    throw new AppError_default(E.NOT_FOUND, "Work schedule not found!");
+  }
+  return await prisma.workSchedule.update({
+    where: { id },
+    data: payload
+  });
+};
+var deleteWorkSchedule = async (id) => {
+  const isExist = await prisma.workSchedule.findUnique({
+    where: { id },
+    include: { _count: { select: { employees: true } } }
+  });
+  if (!isExist) {
+    throw new AppError_default(E.NOT_FOUND, "Work schedule not found!");
+  }
+  if (isExist._count.employees > 0) {
+    throw new AppError_default(E.BAD_REQUEST, "Cannot delete work schedule assigned to active employees!");
+  }
+  return await prisma.workSchedule.delete({ where: { id } });
+};
+var createHoliday = async (payload) => {
+  const holidayDate = new Date(payload.date);
+  holidayDate.setHours(0, 0, 0, 0);
+  const isExist = await prisma.holiday.findUnique({
+    where: { date: holidayDate }
+  });
+  if (isExist) {
+    throw new AppError_default(E.CONFLICT, "A holiday is already added for this date!");
+  }
+  return await prisma.holiday.create({
+    data: {
+      ...payload,
+      date: holidayDate
+    }
+  });
+};
+var getAllHolidays = async () => {
+  return await prisma.holiday.findMany({
+    orderBy: { date: "asc" }
+  });
+};
+var updateHoliday = async (id, payload) => {
+  const isExist = await prisma.holiday.findUnique({ where: { id } });
+  if (!isExist) {
+    throw new AppError_default(E.NOT_FOUND, "Holiday not found!");
+  }
+  return await prisma.holiday.update({
+    where: { id },
+    data: {
+      ...payload,
+      date: payload.date ? new Date(payload.date) : void 0
+    }
+  });
+};
+var deleteHoliday = async (id) => {
+  const isExist = await prisma.holiday.findUnique({ where: { id } });
+  if (!isExist) {
+    throw new AppError_default(E.NOT_FOUND, "Holiday not found!");
+  }
+  return await prisma.holiday.delete({ where: { id } });
+};
+var ScheduleHolidayService = {
+  createWorkSchedule,
+  getAllWorkSchedules,
+  updateWorkSchedule,
+  deleteWorkSchedule,
+  createHoliday,
+  getAllHolidays,
+  updateHoliday,
+  deleteHoliday
+};
+
+// src/app/module/schedule/schedule-holiday.controller.ts
+var createWorkSchedule2 = catchAsync(async (req, res) => {
+  const result = await ScheduleHolidayService.createWorkSchedule(req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Work schedule created successfully",
+    data: result
+  });
+});
+var getAllWorkSchedules2 = catchAsync(async (req, res) => {
+  const result = await ScheduleHolidayService.getAllWorkSchedules();
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Work schedules fetched successfully",
+    data: result
+  });
+});
+var updateWorkSchedule2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ScheduleHolidayService.updateWorkSchedule(id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Work schedule updated successfully",
+    data: result
+  });
+});
+var deleteWorkSchedule2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ScheduleHolidayService.deleteWorkSchedule(id);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Work schedule deleted successfully",
+    data: result
+  });
+});
+var createHoliday2 = catchAsync(async (req, res) => {
+  const result = await ScheduleHolidayService.createHoliday(req.body);
+  sendResponse(res, {
+    httpStatusCode: E.CREATED,
+    success: true,
+    message: "Holiday created successfully",
+    data: result
+  });
+});
+var getAllHolidays2 = catchAsync(async (req, res) => {
+  const result = await ScheduleHolidayService.getAllHolidays();
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Holidays fetched successfully",
+    data: result
+  });
+});
+var updateHoliday2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ScheduleHolidayService.updateHoliday(id, req.body);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Holiday updated successfully",
+    data: result
+  });
+});
+var deleteHoliday2 = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ScheduleHolidayService.deleteHoliday(id);
+  sendResponse(res, {
+    httpStatusCode: E.OK,
+    success: true,
+    message: "Holiday deleted successfully",
+    data: result
+  });
+});
+var ScheduleHolidayController = {
+  createWorkSchedule: createWorkSchedule2,
+  getAllWorkSchedules: getAllWorkSchedules2,
+  updateWorkSchedule: updateWorkSchedule2,
+  deleteWorkSchedule: deleteWorkSchedule2,
+  createHoliday: createHoliday2,
+  getAllHolidays: getAllHolidays2,
+  updateHoliday: updateHoliday2,
+  deleteHoliday: deleteHoliday2
+};
+
+// src/app/module/schedule/schedule-holiday.validation.ts
+import { z as z6 } from "zod";
+var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+var createWorkScheduleSchema = z6.object({
+  name: z6.string().min(1),
+  startTime: z6.string().regex(timeRegex, "Invalid time format. Use HH:mm (e.g. 09:00)"),
+  endTime: z6.string().regex(timeRegex, "Invalid time format. Use HH:mm (e.g. 17:00)"),
+  graceMinutes: z6.number().int().nonnegative().optional(),
+  workDays: z6.array(z6.number().int().min(1, "Day must be between 1 and 7").max(7, "Day must be between 1 and 7")).min(1, "At least one work day must be selected")
+});
+var updateWorkScheduleSchema = createWorkScheduleSchema.partial();
+var createHolidaySchema = z6.object({
+  title: z6.string().min(1),
+  date: z6.string().datetime().or(z6.date()),
+  description: z6.string().optional()
+});
+var updateHolidaySchema = createHolidaySchema.partial();
+
+// src/app/module/schedule/schedule-holiday.route.ts
+var router6 = Router6();
+router6.post(
+  "/work-schedules",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(createWorkScheduleSchema),
+  ScheduleHolidayController.createWorkSchedule
+);
+router6.get(
+  "/work-schedules",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  ScheduleHolidayController.getAllWorkSchedules
+);
+router6.patch(
+  "/work-schedules/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updateWorkScheduleSchema),
+  ScheduleHolidayController.updateWorkSchedule
+);
+router6.delete(
+  "/work-schedules/:id",
+  Auth_default([Role.ADMIN]),
+  ScheduleHolidayController.deleteWorkSchedule
+);
+router6.post(
+  "/holidays",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(createHolidaySchema),
+  ScheduleHolidayController.createHoliday
+);
+router6.get(
+  "/holidays",
+  Auth_default([Role.ADMIN, Role.HR, Role.EMPLOYEE]),
+  ScheduleHolidayController.getAllHolidays
+);
+router6.patch(
+  "/holidays/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  validateRequest(updateHolidaySchema),
+  ScheduleHolidayController.updateHoliday
+);
+router6.delete(
+  "/holidays/:id",
+  Auth_default([Role.ADMIN, Role.HR]),
+  ScheduleHolidayController.deleteHoliday
+);
+var ScheduleHolidayRoutes = router6;
+
+// src/app/router/index.route.ts
+var router7 = Router7();
+router7.use("/v1/employee", EmployeeRoutes);
+router7.use("/v1/attendance", AttendanceRoutes);
+router7.use("/v1/auth", AuthRouters);
+router7.use("/v1/department", DepartmentPositionRoutes);
+router7.use("/v1/leave", LeaveRequestRoutes);
+router7.use("/v1/schedule", ScheduleHolidayRoutes);
+var IndexRouter = router7;
+
 // src/app.ts
 var app = express();
-app.use("/api/auth/:path*", toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 app.set("view engine", "ejs");
 app.set("views", path2.resolve(process.cwd(), `src/app/templates`));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(
   pinoHttp({
     logger,
@@ -365,8 +2706,10 @@ app.use(
     })
   })
 );
-initsentry();
+app.use((0, import_cors.default)());
 app.use(express.json());
+initsentry();
+app.use("/api", IndexRouter);
 app.use("/", (req, res) => {
   res.status(200).json({ success: true, message: "home route" });
 });
@@ -412,3 +2755,19 @@ process.on("SIGTERM", (error) => {
   process.exit(1);
 });
 bootstrap();
+/*! Bundled license information:
+
+object-assign/index.js:
+  (*
+  object-assign
+  (c) Sindre Sorhus
+  @license MIT
+  *)
+
+vary/index.js:
+  (*!
+   * vary
+   * Copyright(c) 2014-2017 Douglas Christopher Wilson
+   * MIT Licensed
+   *)
+*/
